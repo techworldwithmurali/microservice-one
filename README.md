@@ -52,9 +52,9 @@ docker login -umoole devopsbymurali.jfrog.io
 ```
 ### Step 7: tag and push the docker image to Jfrog Artifactory
 ```xml
-docker tag web-app:latest devopsbymurali.jfrog.io/microservices/microservice-one:latest
+docker tag microservice-one:latest devopsbymurali.jfrog.io/microservices/microservice-one:latest
 
-docker push devopsbymurali.jfrog.io/web-application/microservice-one:latest
+docker push devopsbymurali.jfrog.io/microservices/microservice-one:latest
 ```
 
 ### Step 8: Verify whether docker image is pushed or not in Jfrog Artifactory.
