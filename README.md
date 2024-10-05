@@ -126,7 +126,7 @@ kubectl create secret docker-registry dockerhubcred \
 ```
 ### Step 16: Access java application through NodePort.
 ```
-http://Node-IP:port/web-application
+http://Node-IP:port/microservice-one
 ```
 
 
