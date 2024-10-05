@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.techworldwithmurali</groupId>
-  <artifactId>web-application</artifactId>
+  <artifactId>microservice-one</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>web-application Maven Webapp</name>
+  <name>microservice-one</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -16,6 +16,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>web-application</finalName>
+    <finalName>microservice-one</finalName>
   </build>
 </project>
