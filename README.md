@@ -19,7 +19,7 @@
 ### Step 1: Clone the repository
   
 ```xml
-  github url: https://github.com/techworldwithmurali/microservice-one.git
+  git clone  https://github.com/techworldwithmurali/microservice-one.git
   Branch Name: deploy-to-eks-dockerhub
 ```
 ### Step 2: build the code
