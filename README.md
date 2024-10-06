@@ -116,7 +116,7 @@ kubectl get pods -A
 kubectl create secret docker-registry dockerhubcred \
 --docker-server=https://index.docker.io/v1/ \
 --docker-username=mmreddy424 \
---docker-password=Docker@123 \
+--docker-password=Docker@ \
 --docker-email=techworldwithmurali@gmail.com
 ```
 ```xml
@@ -124,9 +124,42 @@ kubectl create secret docker-registry dockerhubcred \
   - name: dockerhubcred
 
 ```
-### Step 16: Access java application through NodePort.
+### Step 16: Deploy Ingress Resource for This Application
+```xml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dev-ingress
+  namespace: dev
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:533267221649:certificate/00cbdeae-a854-412c-87dd-a79eae85a402
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/security-groups: sg-05a2c24577d05d379
+
+spec:
+  ingressClassName: alb
+  rules:
+    - host: microservice-one-dev.techworldwithmurali.in
+      http:
+        paths:
+          - path: /microservice-one
+            pathType: Exact
+            backend:
+              service:
+                name: microservice-one
+                port:
+                  number: 80
+
 ```
-http://Node-IP:port/microservice-one
+
+### Step 17: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+
+### Step 18: Access java application through DNS record Name.
+```
+https://microservice-one-dev.techworldwithmurali.in/microservice-one
 ```
 
 
