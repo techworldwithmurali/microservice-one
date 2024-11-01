@@ -8,6 +8,7 @@
 
 ### Prerequisites:
 + Git is installed
++ Java 17 Installed 
 + Maven is installed
 
 ### Step 1: Clone the repository
