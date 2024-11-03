@@ -2,63 +2,63 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for manually building and pushing artifacts(war) to Jfrog Artifactory</br>
++ <b>Description:</b> Below are the steps outlined for manually building and pushing artifacts(war) to Nexus Artifactory</br>
 
-## Manually - Build and Push to Jfrog Artifactory
+## Manually - Build and Push to Nexus Artifactory
 
 ### Prerequisites:
 + Git is installed
 + Maven is installed
-+ Jfrog Artifactory is installed
-+ Create maven repository in Jfrog
++ Nexus Artifactory is installed
++ Create maven repository in Nexus
 
 ### Step 1: Clone the repository
   ```xml
   git clone https://github.com/techworldwithmurali/microservice-one.git
-  Branch Name: build-and-push-to-jfrog
+  Branch Name: build-and-push-to-nexus
 ```
-### Step 2: Create the user in Jfrog
+### Step 2: Create the user in Nexus
 ```xml
 User Name: moole
 ```
-### Step 3: Create the maven repository in Jfrog
+### Step 3: Create the maven repository in Nexus
 ```xml
-Repository Name: microservice-one
+Repository Name: maven-snapshots
 ```
-### Step 4: Update the jfrog Artifactory details in pom.xml
+### Step 4: Update the Nexus Artifactory details in pom.xml
 ```xml
  <distributionManagement>
       <snapshotRepository>
-        <id>jfrog-snapshots</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <id>nexus-snapshots</id>
+        <url>https://nexus.techworldwithmurali.in/maven-snapshots/</url>
       </snapshotRepository>
       <repository>
-        <id>jfrog-releases</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <id>nexus-releases</id>
+        <url>https://devopsbymurali.jfrog.io/artifactory/maven-releases/</url>
       </repository>
     </distributionManagement>
 ```
-### Step 5: Update the jfrog credentials in settings.xml
+### Step 5: Update the Nexus credentials in settings.xml
 ```xml
 <servers>
     <server>
-      <id>jfrog-snapshots</id>
+      <id>nexus-snapshots</id>
       <username>moole</username>
       <password>Techworld@2580</password>
     </server>
     <server>
-      <id>jfrog-releases</id>
+      <id>nexus-releases</id>
       <username>moole</username>
       <password>Techworld@2580</password>
     </server>
   </servers>
 ```
-### Step 6: Run the below command to push the artifacts to Jfrog Artifactory.
+### Step 6: Run the below command to push the artifacts to nexus Artifactory.
 ```sh
 mvn deploy
 ```
-### Step 7: Verify whether artifact(war) is published or not in Jfrog Artifactory.
+### Step 7: Verify whether artifact(war) is published or not in nexus Artifactory.
 
 
-#### Congratulations. You have successfully published the artifact(war) file in Jfrog repository.
+#### Congratulations. You have successfully published the artifact(war) file in nexus repository.
 
