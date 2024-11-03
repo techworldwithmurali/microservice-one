@@ -14,7 +14,7 @@
 ### Step 1: Clone the repository
   ```xml
   git clone https://github.com/techworldwithmurali/microservice-one.git
-  Branch Name: build-application
+  Branch Name: build
 ```
 
 ### Step 2:Build the application
