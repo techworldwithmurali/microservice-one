@@ -43,7 +43,7 @@ docker tag microservice-one:latest mmreddy424/microservice-one:latest
 ```
 ### Step 6: Login to DockerHub in local
 ```xml
-docker login
+docker login -u your-username -p your-password
 ```
 ### Step 7: Push the docker image to DockerHub
 ```xml
