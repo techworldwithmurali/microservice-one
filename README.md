@@ -23,14 +23,14 @@ User Name: moole
 ```
 ### Step 3: Create the maven repository in Nexus
 ```xml
-Repository Name: maven-snapshots
+Repository Name: tech-snapshots
 ```
 ### Step 4: Update the Nexus Artifactory details in pom.xml
 ```xml
  <distributionManagement>
       <snapshotRepository>
         <id>nexus-snapshots</id>
-        <url>https://nexus.techworldwithmurali.in/maven-snapshots/</url>
+        <url>https://nexus.techworldwithmurali.in/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
         <id>nexus-releases</id>
