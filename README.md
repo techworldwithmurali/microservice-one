@@ -34,7 +34,7 @@ Repository Name: tech-snapshots
       </snapshotRepository>
       <repository>
         <id>nexus-releases</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/maven-releases/</url>
+        <url>https://devopsbymurali.jfrog.io/artifactory/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
