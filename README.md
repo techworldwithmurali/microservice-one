@@ -30,11 +30,11 @@ Repository Name: tech-snapshots
  <distributionManagement>
       <snapshotRepository>
         <id>nexus-snapshots</id>
-        <url>https://nexus.techworldwithmurali.in/tech-snapshots/</url>
+        <url>https://nexus.techworldwithmurali.in/repository/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
         <id>nexus-releases</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/tech-releases/</url>
+        <url>https://nexus.techworldwithmurali.in/repository/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
