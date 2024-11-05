@@ -8,6 +8,7 @@
 
 ### Prerequisites:
 + Git is installed
++ Java 17 Installed
 + Maven is installed
 + Jfrog Artifactory is installed
 + Create maven repository in Jfrog
@@ -23,18 +24,18 @@ User Name: moole
 ```
 ### Step 3: Create the maven repository in Jfrog
 ```xml
-Repository Name: microservice-one
+Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 4: Update the jfrog Artifactory details in pom.xml
 ```xml
  <distributionManagement>
       <snapshotRepository>
         <id>jfrog-snapshots</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
         <id>jfrog-releases</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
