@@ -9,9 +9,10 @@
 ### Prerequisites:
 + Git is installed
 + Maven is installed
++ Java 17 is Installed
 + Jfrog Artifactory is installed
 + Create maven repository in Jfrog
-+ Tomcat 7 is installed
++ Tomcat 9 is installed
 
 ### Step 2: Create the user in Nexus
 ```xml
