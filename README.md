@@ -4,13 +4,13 @@
 + <b>Youtube Channel:</b> Tech World With Murali</br>
 + <b>Description:</b> Below are the steps outlined for manually building and pushing artifacts(war) to Jfrog Artifactory and deploy to tomcat.</br>
 
-## Manually - Build and Push to Jfrog Artifactory and deploy to tomcat.
+## Manually - Build and Push to Nexus  Artifactory and deploy to tomcat.
 
 ### Prerequisites:
 + Git is installed
 + Maven is installed
 + Java 17 is Installed
-+ Jfrog Artifactory is installed
++ Nexus Artifactory is installed
 + Create maven repository in Jfrog
 + Tomcat 9 is installed
 
