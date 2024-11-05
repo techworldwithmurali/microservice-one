@@ -34,7 +34,7 @@
 <properties>
 <!-- Optional URL to server. Default value is http://localhost:9000 -->
 <sonar.host.url>
-http://10.155.19.5:9000
+https://nexus.techworldwithmurali.in
 </sonar.host.url>
 </properties>
 </profile>
@@ -43,7 +43,7 @@ http://10.155.19.5:9000
 ```
 ### Step 4: Run below command to generate the static code analysis report.
 ```sh
-mvn sonar:sonar -Dsonar.sonar.host.url=http://13.233.6.6:9000 -Dsonar.login=a59971a4cf3ee650a17c928570ce7fb268c36a90
+mvn sonar:sonar -Dsonar.sonar.host.url=https://nexus.techworldwithmurali.in -Dsonar.login=a59971a4cf3ee650a17c928570ce7fb268c36a90
 ```
 ### Step 5: Verify whether SonarQube report is generated or not in SonarQube Dashboard.
 
