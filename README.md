@@ -13,53 +13,47 @@
 + Create maven repository in Jfrog
 + Tomcat 7 is installed
 
-### Step 1: Clone the repository
-  ```xml
-  git clone https://github.com/techworldwithmurali/microservice-one.git
-  Branch Name: build-and-push-to-jfrog-deploy-tomcat
-```
-### Step 2: Create the user in Jfrog
+### Step 2: Create the user in Nexus
 ```xml
 User Name: moole
 ```
-### Step 3: Create the maven repository in Jfrog
+### Step 3: Create the maven repository in Nexus
 ```xml
-Repository Name: microservice-one
+Repository Name: tech-snapshots
 ```
-### Step 4: Update the jfrog Artifactory details in pom.xml
+### Step 4: Update the Nexus Artifactory details in pom.xml
 ```xml
  <distributionManagement>
       <snapshotRepository>
-        <id>jfrog-snapshots</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <id>nexus-snapshots</id>
+        <url>https://nexus.techworldwithmurali.in/repository/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
-        <id>jfrog-releases</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <id>nexus-releases</id>
+        <url>https://nexus.techworldwithmurali.in/repository/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
-
-### Step 5: Update the jfrog credentials in settings.xml
+### Step 5: Update the Nexus credentials in settings.xml
 ```xml
 <servers>
     <server>
-      <id>jfrog-snapshots</id>
+      <id>nexus-snapshots</id>
       <username>moole</username>
       <password>Techworld@2580</password>
     </server>
     <server>
-      <id>jfrog-releases</id>
+      <id>nexus-releases</id>
       <username>moole</username>
       <password>Techworld@2580</password>
     </server>
   </servers>
 ```
-### Step 6: Run the below command to push the artifacts to Jfrog Artifactory.
+### Step 6: Run the below command to push the artifacts to nexus Artifactory.
 ```sh
 mvn deploy
 ```
-### Step 7: Verify whether artifact(war) is published or not in Jfrog Artifactory.
+### Step 7: Verify whether artifact(war) is published or not in nexus Artifactory.
 
 ### Step 8 : Deploy the war file in Tomcat webapps folder.
 ### Step 10 : Verify whether application is up and running or not
