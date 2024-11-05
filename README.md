@@ -14,6 +14,11 @@
 + Create maven repository in Jfrog
 + Tomcat 9 is installed
 
+### Step 1: Clone the repository
+  ```xml
+  git clone https://github.com/techworldwithmurali/microservice-one.git
+  Branch Name: build-and-push-to-nexus-deploy-tomcat
+```
 ### Step 2: Create the user in Nexus
 ```xml
 User Name: moole
