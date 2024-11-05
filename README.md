@@ -8,9 +8,10 @@
 
 ### Prerequisites:
 + Git is installed
++ Java 17 installed
 + Maven is installed
 + Docker is installed
-+ Jfrog docker repository is created.
++ docker repository in Jfrog Artifactory
 
 ### Step 1: Clone the repository
   
@@ -25,16 +26,16 @@ mvn package
 ### Step 3:
 Step 3.1: Create the user in Jfrog
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
 Step 3.2: Create the docker repository in Jfrog Artifactory
 ```xml
-Repository Name: microservices
+Repository Name: tech
 ```
 ### Step 4: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
@@ -48,13 +49,13 @@ docker build . --tag microservice-one:latest
 ```
 ### Step 6: Login to Jfrog Artifactory in local
 ```xml
-docker login -umoole devopsbymurali.jfrog.io
+docker login -umoole jfrog.techworldwithmurali.in
 ```
 ### Step 7: tag and push the docker image to Jfrog Artifactory
 ```xml
-docker tag microservice-one:latest devopsbymurali.jfrog.io/microservices/microservice-one:latest
+docker tag microservice-one:latest jfrog.techworldwithmurali.in/tech/microservice-one:latest
 
-docker push devopsbymurali.jfrog.io/microservices/microservice-one:latest
+docker push jfrog.techworldwithmurali.in/tech/microservice-one:latest
 ```
 
 ### Step 8: Verify whether docker image is pushed or not in Jfrog Artifactory.
