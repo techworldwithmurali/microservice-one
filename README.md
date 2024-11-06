@@ -22,7 +22,7 @@ Job Name: build-freestyle
 ### Step 3: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-push-to-jfrog-freestyle
+Branch : bbuild-freestyle
 ```
 ### Step 4: Configure the Invoke top-level maven targets
       clean install
