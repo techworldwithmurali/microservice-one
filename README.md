@@ -32,22 +32,22 @@ Repository Name: tech-snapshots and tech-releases
  <distributionManagement>
       <snapshotRepository>
         <id>Nexus-snapshots</id>
-        <url>https://Nexus.techworldwithmurali.in/artifactory/tech-snapshots/</url>
+        <url>https://nexus.techworldwithmurali.in/artifactory/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
         <id>Nexus-releases</id>
-        <url>https://Nexus.techworldwithmurali.in/artifactory/tech-releases/</url>
+        <url>https://nexus.techworldwithmurali.in/artifactory/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
 ### Step 5: Create the Jenkins Freestyle job
 ```xml
-Job Name: build-and-push-to-Nexus
+Job Name: build-and-push-to-nexus-freestyle
 ```
 ### Step 6: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-push-to-Nexus-freestyle
+Branch : build-and-push-to-nexus-freestyle
 ```
 ### Step 7: Configure the Invoke top level maven targets
       clean install
