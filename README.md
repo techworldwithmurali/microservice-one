@@ -29,7 +29,7 @@ Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 4: Create the Jenkins Pipeline job
 ```xml
-Job Name: build-and-push-to-nexus-pipeline
+Job Name: build-and-push-to-nexus-deploy-tomcat-pipeline
 ```
 ### Step 5: Configure the git repository
 ```xml
