@@ -20,7 +20,7 @@
 ```
 ### Step 2: Create the user in Jfrog
 ```xml
-User Name: moole
+User Name: devops
 ```
 ### Step 3: Create the maven repository in Jfrog
 ```xml
@@ -44,12 +44,12 @@ Repository Name: tech-snapshots and tech-releases
 <servers>
     <server>
       <id>jfrog-snapshots</id>
-      <username>moole</username>
+      <username>devops</username>
       <password>Techworld@2580</password>
     </server>
     <server>
       <id>jfrog-releases</id>
-      <username>moole</username>
+      <username>devops</username>
       <password>Techworld@2580</password>
     </server>
   </servers>
