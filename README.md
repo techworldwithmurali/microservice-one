@@ -11,7 +11,7 @@
 + Maven is installed
 + Jfrog Artifactory is installed
 + Create maven repository in Jfrog
-+ Tomcat 7 is installed
++ Tomcat 9 is installed
 
 ### Step 1: Clone the repository
   ```xml
