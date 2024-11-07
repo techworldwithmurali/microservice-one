@@ -21,11 +21,13 @@
 ```
 ### Step 2: Create the user in Nexus
 ```xml
-User Name: moole
+User Name: devops
+Password : Techworld@2580
+
 ```
 ### Step 3: Create the maven repository in Nexus
 ```xml
-Repository Name: tech-snapshots
+Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 4: Update the Nexus Artifactory details in pom.xml
 ```xml
@@ -45,12 +47,12 @@ Repository Name: tech-snapshots
 <servers>
     <server>
       <id>nexus-snapshots</id>
-      <username>moole</username>
+      <username>devops</username>
       <password>Techworld@2580</password>
     </server>
     <server>
       <id>nexus-releases</id>
-      <username>moole</username>
+      <username>devops</username>
       <password>Techworld@2580</password>
     </server>
   </servers>
