@@ -43,9 +43,6 @@ stage('Build') {
         }
 ```
 
-  
-```
-
 ### Step 5: Verify whether the artifact (war) is generated or not
 
 #### Congratulations! You have successfully generated the artifact (WAR) file using the Jenkins Pipeline job.
