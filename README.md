@@ -65,7 +65,7 @@ stage('Build') {
   
  ```
 
-+ ### Deploy the war file in Tomcat
++ ### 6.4: Deploy the war file in Tomcat
 ```xml
 stage('Deploy to tomcat') {
             steps {
