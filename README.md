@@ -2,45 +2,59 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Jenkins Freestyle - Build and Deploy the war file in Tomcat.</br>
++ <b>Description:</b> Below are the steps outlined for Jenkins Freestyle: Build, push to Nexus, and deploy the WAR file to Tomcat..</br>
 
-## Jenkins Freestyle - Build and Deploy the war file in Tomcat.
+## Jenkins Freestyle: Build, push to Nexus, and deploy the WAR file to Tomcat.
 
 ### Prerequisites:
   + Jenkins is installed
-  + Tomcat 7 is installed
-  + Jfrog artifactory is installed
+  + Tomcat 9 is installed
+  + Nexus artifactory is installed
   + Github token generate
 
 ### Step 1: Install and configure the jenkins plugins
   + git
   + maven integration
-  + artifactory
+  + Nexus artifact uploader
+  + Deploy to container 
   
-### Step 2: Create the user in Jfrog
+### Step 2: Create the user in Nexus
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
-### Step 3: Create the maven repository in Jfrog
+### Step 3: Create the maven repository in Nexus
 ```xml
-Repository Name: microservice-one
+Repository Name: tech-snapshots and tech-releases
 ```
-### Step 4: Create the Jenkins Freestyle job
+### Step 4: Update the Nexus Artifactory details in pom.xml
 ```xml
-Job Name: build-and-deploy-to-tomcat
+ <distributionManagement>
+      <snapshotRepository>
+        <id>Nexus-snapshots</id>
+        <url>https://Nexus.techworldwithmurali.in/artifactory/tech-snapshots/</url>
+      </snapshotRepository>
+      <repository>
+        <id>Nexus-releases</id>
+        <url>https://Nexus.techworldwithmurali.in/artifactory/tech-releases/</url>
+      </repository>
+    </distributionManagement>
 ```
-### Step 5: Configure the git repository
+### Step 5: Create the Jenkins Freestyle job
+```xml
+Job Name: build-and-push-to-Nexus
+```
+### Step 6: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-deploy-to-tomcat-freestyle
+Branch : build-and-push-to-Nexus-freestyle
 ```
-### Step 6: Configure the Invoke Artifactory Maven 3
+### Step 7: Configure the Invoke top level maven targets
       clean install
-### Step 7: Configure the Maven3 artifactory Integration
+### Step 8: Configure the nexus artifact uploader
 
-### Step 8: Verify whether artifact(war) is published or not in Jfrog Artifactory.
-### Step 9: Configure the tomcat under post build section
-### Step 10: Verify whether application is deployed or not properly in tomcat
+### Step 9: Verify whether artifact(war) is published or not in Nexus Artifactory.
+### Step 10: Configure the tomcat under post build section
+### Step 11: Verify whether application is deployed or not properly in tomcat
 
 #### Congratulations. You have successfully deployed the artifact(war) file in Tomcat using Jenkins Freestyle job.
