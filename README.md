@@ -2,50 +2,39 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Jenkins Pipeline - building and pushing artifacts(war) to Jfrog Artifactory</br>
++ <b>Description:</b> Below are the steps outlined for the Jenkins Pipeline to build the application and generate the WAR file</br>
 
 ## Jenkins Pipeline - Build and Push to Jfrog Artifactory
 
 ### Prerequisites:
   + Jenkins is installed
-  + Jfrog artifactory is installed
   + Github token generate
 
 ### Step 1: Install and configure the jenkins plugins
   + git
   + maven integration
-  + artifactory
   
-### Step 2: Create the user in Jfrog
+### Step 2: Create the Jenkins Pipeline job
 ```xml
-UserName: moole
-Password: Techworld@2580
+Job Name: build-pipeline
 ```
-### Step 3: Create the maven repository in Jfrog
-```xml
-Repository Name: microservices
-```
-### Step 4: Create the Jenkins Pipeline job
-```xml
-Job Name: build-and-push-to-jfrog
-```
-### Step 5: Configure the git repository
+### Step 3: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-push-to-jfrog-jenkinsfile
+Branch : build-jenkinsfile
 ```
-### Step 6: Write the Jenkinsfile
-  + ### Step 6.1: Clone the repository 
+### Step 4: Write the Jenkinsfile
+  + ### Step 4.1: Clone the repository 
 ```xml
 stage('Clone the Repository ') {
             steps {
-               git branch: 'build-and-push-to-jfrog-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+               git branch: 'build-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
                
                
             }
         }
 ```
-  + ### Step 6.2: Build the code
+  + ### Step 4.2: Build the code
 ```xml
 stage('Build') {
             steps {
@@ -53,27 +42,11 @@ stage('Build') {
             }
         }
 ```
-  + ### 6.3: Push the artifacts to jfrog repository
-```xml
- stage('Push the artifacts into Jfrog artifactory') {
-            steps {
-              rtUpload (
-                serverId: 'Jfrog-dev-server',
-                spec: '''{
-                      "files": [
-                        {
-                          "pattern": "*.war",
-                           "target": "microservice-one/"
-                        }
-                    ]
-                }'''
-              )
-          }
-        }
+
   
 ```
 
-### Step 8: Verify whether artifact(war) is published or not in Jfrog Artifactory.
+### Step 5: Verify whether the artifact (war) is generated or not
 
-#### Congratulations. You have successfully published the artifact(war) file in Jfrog repository using Jenkins Pipeline job.
+#### Congratulations! You have successfully generated the artifact (WAR) file using the Jenkins Pipeline job.
 
