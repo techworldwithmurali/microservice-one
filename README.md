@@ -20,22 +20,23 @@
 ```
 ### Step 2: Create the user in Jfrog
 ```xml
-User Name: moole
+User Name: devops
+Password: Techworld@2580
 ```
 ### Step 3: Create the maven repository in Jfrog
 ```xml
-Repository Name: microservice-one
+Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 4: Update the jfrog Artifactory details in pom.xml
 ```xml
  <distributionManagement>
       <snapshotRepository>
         <id>jfrog-snapshots</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
         <id>jfrog-releases</id>
-        <url>https://devopsbymurali.jfrog.io/artifactory/microservice-one/</url>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
@@ -45,12 +46,12 @@ Repository Name: microservice-one
 <servers>
     <server>
       <id>jfrog-snapshots</id>
-      <username>moole</username>
+      <username>devops</username>
       <password>Techworld@2580</password>
     </server>
     <server>
       <id>jfrog-releases</id>
-      <username>moole</username>
+      <username>devops</username>
       <password>Techworld@2580</password>
     </server>
   </servers>
