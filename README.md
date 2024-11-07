@@ -18,7 +18,7 @@
   
 ### Step 2: Create the user in Jfrog
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
 ### Step 3: Create the maven repository in Jfrog
