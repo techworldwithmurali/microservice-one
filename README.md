@@ -2,44 +2,46 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Jenkins Pipeline - building and pushing artifacts(war) to Jfrog Artifactory</br>
++ <b>Description:</b> Below are the steps outlined for Jenkins Pipeline - Build, push to Nexus, and deploy the WAR file to Tomcat..</br>
 
-## Jenkins Pipeline - Build and Push to Jfrog Artifactory
+## Jenkins Pipeline - Build, push to Nexus, and deploy the WAR file to Tomcat..
 
 ### Prerequisites:
   + Jenkins is installed
-  + Jfrog artifactory is installed
+  + Nexus artifactory is installed
+  + Tomcat 9 installed
   + Github token generate
 
 ### Step 1: Install and configure the jenkins plugins
   + git
   + maven integration
-  + artifactory
+  + Nexus artifact Uploder
+  + Deploy to Container
   
-### Step 2: Create the user in Jfrog
+### Step 2: Create the user in Nexus
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
-### Step 3: Create the maven repository in Jfrog
+### Step 3: Create the maven repository in Nexus
 ```xml
-Repository Name: microservices
+Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 4: Create the Jenkins Pipeline job
 ```xml
-Job Name: build-and-push-to-jfrog
+Job Name: build-and-push-to-nexus-pipeline
 ```
 ### Step 5: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-push-to-jfrog-jenkinsfile
+Branch : build-and-push-to-nexus-jenkinsfile
 ```
 ### Step 6: Write the Jenkinsfile
   + ### Step 6.1: Clone the repository 
 ```xml
 stage('Clone the Repository ') {
             steps {
-               git branch: 'build-and-push-to-jfrog-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+               git branch: 'build-and-push-to-nexus-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
                
                
             }
@@ -53,27 +55,29 @@ stage('Build') {
             }
         }
 ```
-  + ### 6.3: Push the artifacts to jfrog repository
+  + ### 6.3: Push the artifacts to Nexus repository
 ```xml
- stage('Push the artifacts into Jfrog artifactory') {
+ stage('Push the artifacts into Nexus artifactory') {
+           steps {
+               nexusArtifactUploader artifacts: [[artifactId: 'microservice-one', classifier: '', file: 'target/microservice-one.war', type: 'war']], credentialsId: 'nexus', groupId: 'com.techworldwithmurali', nexusUrl: 'nexus.techworldwithmurali.in', nexusVersion: 'nexus3', protocol: 'https', repository: 'tech-snapshots', version: '1.0-SNAPSHOT'
+            }
+        }
+  
+ ```
+
++ ### Deploy the war file in Tomcat
+```xml
+stage('Deploy to tomcat') {
             steps {
-              rtUpload (
-                serverId: 'Jfrog-dev-server',
-                spec: '''{
-                      "files": [
-                        {
-                          "pattern": "*.war",
-                           "target": "microservice-one/"
-                        }
-                    ]
-                }'''
-              )
-          }
+            deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'https://tomcat.techworldwithmurali.in')], contextPath: null, war: '**/*.war'
+                
+            }
         }
   
 ```
 
-### Step 8: Verify whether artifact(war) is published or not in Jfrog Artifactory.
+### Step 8: Verify whether application is up and running or not.
 
-#### Congratulations. You have successfully published the artifact(war) file in Jfrog repository using Jenkins Pipeline job.
+
+#### Congratulations. You have successfully deployed the war file in Tomcat  using Jenkins Pipeline job.
 
