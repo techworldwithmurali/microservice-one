@@ -4,7 +4,7 @@
 + <b>Youtube Channel:</b> Tech World With Murali</br>
 + <b>Description:</b> Below are the steps outlined for the Jenkins Pipeline to build the application and generate the WAR file</br>
 
-## Jenkins Pipeline - Build and Push to Jfrog Artifactory
+## Jenkins Pipeline - Build the application
 
 ### Prerequisites:
   + Jenkins is installed
