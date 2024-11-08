@@ -42,12 +42,12 @@ Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 5: Create the Jenkins Freestyle job
 ```xml
-Job Name: build-and-push-to-nexus-freestyle
+Job Name: build-and-push-to-nexus-deploy-tomcat-freestyle
 ```
 ### Step 6: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-push-to-nexus-freestyle
+Branch : build-and-push-to-nexus-deploy-tomcat-freestyle
 ```
 ### Step 7: Configure the Invoke top level maven targets
       clean install
