@@ -31,12 +31,12 @@ Repository Name: tech-snapshots and tech-releases
 ```xml
  <distributionManagement>
       <snapshotRepository>
-        <id>Nexus-snapshots</id>
-        <url>https://nexus.techworldwithmurali.in/artifactory/tech-snapshots/</url>
+        <id>nexus-snapshots</id>
+        <url>https://nexus.techworldwithmurali.in/repository/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
-        <id>Nexus-releases</id>
-        <url>https://nexus.techworldwithmurali.in/artifactory/tech-releases/</url>
+        <id>nexus-releases</id>
+        <url>https://nexus.techworldwithmurali.in/repository/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
