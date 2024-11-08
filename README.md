@@ -25,6 +25,19 @@ Password: Techworld@2580
 ```xml
 Repository Name: tech-snapshots and tech-releases
 ```
+### Step 3.1: Update the Jfrog Artifactory details in pom.xml
+```xml
+  <distributionManagement>
+      <snapshotRepository>
+        <id>jfrog-snapshots</id>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-snapshots/</url>
+      </snapshotRepository>
+      <repository>
+        <id>jfrog-releases</id>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-releases/</url>
+      </repository>
+    </distributionManagement>
+```
 ### Step 4: Create the Jenkins Pipeline job
 ```xml
 Job Name: build-and-push-to-jfrog-deploy-tomcat-pipeline
