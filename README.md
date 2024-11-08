@@ -2,21 +2,19 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Jenkins Pipeline - Build, push to Jfrog, and deploy the WAR file to Tomcat.</br>
++ <b>Description:</b> Below are the steps outlined for Jenkins Pipeline - Build and Push to Jfrog artifactory</br>
 
-## Jenkins Pipeline - Build, push to Jfrog, and deploy the WAR file to Tomcat
+## Jenkins Pipeline - Build and Push to Jfrog artifactory
 
 ### Prerequisites:
   + Jenkins is installed
   + Jfrog artifactory is installed
   + Github token generate
-  + Tomcat 9 Installed
 
 ### Step 1: Install and configure the jenkins plugins
   + git
   + maven integration
   + artifactory
-  + Deploy to container
   
 ### Step 2: Create the user in Jfrog
 ```xml
@@ -86,20 +84,9 @@ stage('Push the artifacts into Jfrog Artifactory') {
   
 ```
 
-+ ### 6.4: Deploy the war file in Tomcat
-```xml
-stage('Deploy to tomcat') {
-            steps {
-            deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'https://tomcat.techworldwithmurali.in')], contextPath: null, war: '**/*.war'
-                
-            }
-        }
-  
-```
-
-### Step 7: Verify whether application is up and running or not.
+### Step 7: Verify whether the WAR file was pushed to JFrog or not
 
 
-#### Congratulations. You have successfully deployed the war file in Tomcat  using Jenkins Pipeline job.
+#### Congratulations. Congratulations! You have successfully pushed the WAR file to JFrog using the Jenkins pipeline job.
 
 
