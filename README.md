@@ -40,7 +40,7 @@ Repository Name: tech-snapshots and tech-releases
 ```
 ### Step 4: Create the Jenkins Pipeline job
 ```xml
-Job Name: build-and-push-to-jfrog-deploy-tomcat-pipeline
+Job Name: build-and-push-to-jfrog-deploy-pipeline
 ```
 ### Step 5: Configure the git repository
 ```xml
