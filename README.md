@@ -29,12 +29,12 @@ Repository Name: tech-snapshots and tech-releases
 ```xml
  <distributionManagement>
       <snapshotRepository>
-        <id>Nexus-snapshots</id>
-        <url>https://Nexus.techworldwithmurali.in/artifactory/tech-snapshots/</url>
+        <id>jfrog-snapshots</id>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-snapshots/</url>
       </snapshotRepository>
       <repository>
-        <id>Nexus-releases</id>
-        <url>https://Nexus.techworldwithmurali.in/artifactory/tech-releases/</url>
+        <id>jfrog-releases</id>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-releases/</url>
       </repository>
     </distributionManagement>
 ```
