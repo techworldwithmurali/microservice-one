@@ -57,21 +57,32 @@ stage('Build') {
 ```
   + ### 6.3: Push the artifacts to jfrog repository
 ```xml
- stage('Push the artifacts into Jfrog artifactory') {
-            steps {
-              rtUpload (
-                serverId: 'Jfrog-dev-server',
-                spec: '''{
-                      "files": [
-                        {
-                          "pattern": "*.war",
-                           "target": "microservice-one/"
-                        }
-                    ]
-                }'''
-              )
-          }
+stage('Push the artifacts into Jfrog Artifactory') {
+    steps {
+        script {
+            // Get the current date and time in the format: yyyy-MM-dd_HH-mm
+            def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
+
+            // Define the target path with the timestamp
+            def targetPath = "microservice-one/${currentDate}/"
+
+            // Upload the artifact to JFrog Artifactory with the timestamped path
+            rtUpload(
+                serverId: 'jfrog',
+                spec: """
+                    {
+                        "files": [
+                            {
+                                "pattern": "*.war",
+                                "target": "${targetPath}"
+                            }
+                        ]
+                    }
+                """
+            )
         }
+    }
+}
   
 ```
 
