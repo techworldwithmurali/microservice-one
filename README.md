@@ -34,14 +34,14 @@ Job Name: build-and-push-to-jfrog-deploy-tomcat-pipeline
 ### Step 5: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : build-and-push-to-nexus-deploy-tomcat-jenkinsfile
+Branch : build-and-push-to-jfrog-deploy-tomcat-jenkinsfile
 ```
 ### Step 6: Write the Jenkinsfile
   + ### Step 6.1: Clone the repository 
 ```xml
 stage('Clone the Repository ') {
             steps {
-               git branch: 'build-and-push-to-nexus-deploy-tomcat-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+               git branch: 'build-and-push-to-jfrog-deploy-tomcat-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
                
                
             }
