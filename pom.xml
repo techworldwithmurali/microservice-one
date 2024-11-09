@@ -18,4 +18,14 @@
   <build>
     <finalName>microservice-one</finalName>
   </build>
+    <distributionManagement>
+      <snapshotRepository>
+        <id>jfrog-snapshots</id>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-snapshots/</url>
+      </snapshotRepository>
+      <repository>
+        <id>jfrog-releases</id>
+        <url>https://jfrog.techworldwithmurali.in/artifactory/tech-releases/</url>
+      </repository>
+    </distributionManagement>
 </project>
