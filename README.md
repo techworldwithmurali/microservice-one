@@ -75,7 +75,7 @@ stage('Push the artifacts into Jfrog Artifactory') {
             def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
 
             // Define the target path with the timestamp
-            def targetPath = "microservice-one/${currentDate}/"
+            def targetPath = "tech-snapshots/${currentDate}/"
 
             // Upload the artifact to JFrog Artifactory with the timestamped path
             rtUpload(
