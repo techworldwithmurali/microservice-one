@@ -26,7 +26,7 @@ mvn package
 ### Step 3:
 Step 3.1: Create the user in Jfrog
 ```xml
-UserName: devops
+UserName: murali
 Password: Techworld@2580
 ```
 Step 3.2: Create the docker repository in Jfrog Artifactory
@@ -49,7 +49,7 @@ docker build . --tag microservice-one:latest
 ```
 ### Step 6: Login to Jfrog Artifactory in local
 ```xml
-docker login -umoole jfrog.techworldwithmurali.in
+docker login -murali jfrog.techworldwithmurali.in
 ```
 ### Step 7: tag and push the docker image to Jfrog Artifactory
 ```xml
