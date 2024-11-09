@@ -49,7 +49,7 @@ docker build . --tag microservice-one:latest
 ```
 ### Step 6: Login to Jfrog Artifactory in local
 ```xml
-docker login -murali jfrog.techworldwithmurali.in
+docker login -umurali jfrog.techworldwithmurali.in
 ```
 ### Step 7: tag and push the docker image to Jfrog Artifactory
 ```xml
