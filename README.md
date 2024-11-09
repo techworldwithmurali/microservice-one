@@ -64,11 +64,11 @@ stage('Push the artifacts into Jfrog Artifactory') {
             def currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())
 
             // Define the target path with the timestamp
-            def targetPath = "microservice-one/${currentDate}/"
+            def targetPath = "tech-snapshots/${currentDate}/"
 
             // Upload the artifact to JFrog Artifactory with the timestamped path
             rtUpload(
-                serverId: 'jfrog',
+                serverId: 'Jfrog',
                 spec: """
                     {
                         "files": [
@@ -90,7 +90,7 @@ stage('Push the artifacts into Jfrog Artifactory') {
 ```xml
 stage('Deploy to tomcat') {
             steps {
-            deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'https://tomcat.techworldwithmurali.in')], contextPath: null, war: '**/*.war'
+            deploy adapters: [tomcat9(credentialsId: 'tomcat-cred', path: '', url: 'https://tomcat.techworldwithmurali.in')], contextPath: null, war: '**/*.war'
                 
             }
         }
