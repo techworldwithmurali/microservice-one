@@ -17,7 +17,7 @@
 
 ### Step 2: Create the Docker repository
 ```xml
-Name: web-application
+Repository Name: microservice-one
 ```
 
 ### Step 3: Create the Jenkins Pipeline job
@@ -31,7 +31,7 @@ Branch : pushing-docker-image-to-dockerhub-jenkinsfile
 ```
 ### Step 6: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
@@ -44,7 +44,7 @@ CMD ["catalina.sh", "run"]
 ```xml
 stage('Clone') {
             steps {
-                git branch: 'pushing-docker-image-to-dockerhub-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+                git branch: 'pushing-docker-image-to-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
