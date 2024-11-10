@@ -22,7 +22,7 @@ Name: microservice-one
 
 ### Step 3: Create the Jenkins Freestyle job
 ```xml
-Job Name: pushing-docker-image-to-dockerhub
+Job Name: pushing-docker-image-to-dockerhub-freestyle
 ```
 ### Step 4: Configure the git repository
 ```xml
@@ -49,7 +49,7 @@ docker tag microservice-one:latest mmreddy424/microservice-one:latest
 ```
 ### Step 8: login to DockerHub
 ```xml
-docker login -u mmreddy424 -p Docker@123
+docker login -u mmreddy424 -p Docker@2580
 ```
 ### Step 9: Push to DockerHub
 ```xml
