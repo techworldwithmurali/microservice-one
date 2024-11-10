@@ -20,7 +20,7 @@
   </div>
 
  <div style="width: 30%; text-align: center; margin-left: -50px;">
-    <img class="logo" src="./images/Photo-of-moole-muralidhara-reddy.jpg" style="width: 100%;" alt="Moole Muralidhara Reddy">
+    <img class="logo" src="./images/Photo-of-Moole-Muralidhara-Reddy.png" style="width: 100%;" alt="Moole Muralidhara Reddy">
   </div>
 </div>
 
