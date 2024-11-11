@@ -20,8 +20,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-               docker build . --tag microservice-one:$GIT_COMMIT
-               docker tag microservice-one:$GIT_COMMIT mmreddy424/microservice-one:$GIT_COMMIT
+                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+               docker build . --tag microservice-one:$IMAGE_TAG
+               docker tag microservice-one:$IMAGE_TAG mmreddy424/microservice-one:$IMAGE_TAG
                 '''
                 
             }
@@ -30,7 +31,7 @@ pipeline {
             steps {
                 sh '''
                docker login -u mmreddy424 -p Docker@2580
-               docker push  mmreddy424/microservice-one:$GIT_COMMIT
+               docker push  mmreddy424/microservice-one:$IMAGE_TAG
                 
                 '''
                 
