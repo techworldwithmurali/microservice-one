@@ -20,7 +20,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-               docker build . --tag microservice-one:latest
+               docker build . --tag microservice-one:$GIT_COMMIT
                docker tag microservice-one:latest mmreddy424/microservice-one:latest
                 
                 '''
