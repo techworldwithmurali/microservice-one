@@ -10,7 +10,6 @@
 + Jenkins is installed
 + Docker is installed
 + AWS cli is installed
-+ IAM user is created.  User name: dev
 + Github token generate
 
 ### Step 1: Install and configure the jenkins plugins
@@ -49,7 +48,7 @@ CMD ["catalina.sh", "run"]
 docker build . --tag microservice-one:latest
 docker tag microservice-one:latest 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
-### Step 11: Configure the AWS credenatils in Jenkins Server
+### Step 11: Configure the AWS credenatils in Jenkins Server or attach the IAM role to the jenkins server 
 ```xml
 aws configure
 ```
