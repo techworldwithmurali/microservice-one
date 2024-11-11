@@ -16,5 +16,17 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+               docker build . --tag microservice-one:latest
+               docker tag microservice-one:latest mmreddy424/microservice-one:latest
+                
+                '''
+                
+            }
+        }
+   
     }
 }
