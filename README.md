@@ -8,12 +8,12 @@
 
 ### Prerequisites:
 + Jenkins is installed
-+  Docker is installed
 +  Github token generate
 
 ### Step 1: Install and configure the jenkins plugins
  + git
  + maven integration
+ + Docker
 
 ### Step 2: Create the Docker repository
 ```xml
@@ -29,6 +29,25 @@ Job Name: pushing-docker-image-to-dockerhub-jenkins-pipeline
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
 Branch : pushing-docker-image-to-dockerhub-jenkinsfile
 ```
+
+
+### Step 5: Write the Jenkinsfile
+  + ### Step 5.1: Clone the repository 
+```xml
+stage('Clone') {
+            steps {
+                git branch: 'pushing-docker-image-to-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+            }
+        }
+```
+  + ### Step 5.2: Build the code
+```xml
+stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+```
 ### Step 6: Write the Dockerfile
 ```xml
 FROM tomcat:9.0.96-jdk17
@@ -38,25 +57,7 @@ ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 ```
-
-### Step 6: Write the Jenkinsfile
-  + ### Step 6.1: Clone the repository 
-```xml
-stage('Clone') {
-            steps {
-                git branch: 'pushing-docker-image-to-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
-            }
-        }
-```
-  + ### Step 6.2: Build the code
-```xml
-stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-```
-  + ### 6.3: Build Docker Image
+  + ### 6.1: Build Docker Image
 ```xml
 stage('Build Docker Image') {
             steps {
@@ -70,11 +71,11 @@ stage('Build Docker Image') {
         }
    
 ```
-+ ###  6.4: Push Docker Image
++ ###  6.2: Push Docker Image
 ```xml
 stage('Push Docker Image') {
             steps {
-                  withCredentials([usernamePassword(credentialsId: 'dockerhub_crdenatils', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
        
                     sh '''
                     docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
