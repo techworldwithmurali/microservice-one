@@ -10,61 +10,61 @@
 + Jenkins is installed
 + Docker is installed
 + AWS cli is installed
-+ IAM user is created.  User name: dev
 + Github token generate
 
 ### Step 1: Install and configure the jenkins plugins
  + git
  + maven integration
- + Pipeline: AWS Steps
 
 ### Step 2: Create the AWS ECR repository
 ```xml
 Name: microservice-one
 ```
-### Step 3: Write the Dockerfile
-```xml
-FROM tomcat:9
-RUN apt update
-WORKDIR /usr/local/tomcat
-ADD target/*.war webapps/
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
-```
-### Step 4: Create the Jenkins Pipeline job
+
+### Step 3: Create the Jenkins Pipeline job
 ```xml
 Job Name: pushing-docker-image-to-ecr-jenkins-pipeline
 ```
-### Step 5: Configure the git repository
+### Step 4: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
 Branch : pushing-docker-image-to-ecr-jenkinsfile
 ```
 
-### Step 6: Write the Jenkinsfile
-  + ### Step 6.1: Clone the repository 
+### Step 5: Write the Jenkinsfile
+  + ### Step 5.1: Clone the repository 
 ```xml
 stage('Clone the repository') {
             steps {
-               git branch: 'pushing-docker-image-to-ecr-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+               git branch: 'pushing-docker-image-to-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
-  + ### Step 6.2: Build the code
+  + ### Step 5.2: Build the code
 ```xml
-stage('Build') {
+stage('Build the application') {
             steps {
                 sh 'mvn clean install'
             }
         }
 ```
-  + ### 6.3: Build Docker Image
+### Step 6: Write the Dockerfile
+```xml
+FROM tomcat:9.0.96-jdk17
+RUN apt update
+WORKDIR /usr/local/tomcat
+ADD target/*.war webapps/
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+```
+  + ### 6.1: Build Docker Image
 ```xml
 stage('Build Docker Image') {
             steps {
                 sh '''
-              docker build . --tag microservice-one:$BUILD_NUMBER
-              docker tag microservice-one:$BUILD_NUMBER 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+              docker build . --tag microservice-one:latest
+              docker tag microservice-one:latest 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
                 
                 '''
                 
@@ -72,18 +72,15 @@ stage('Build Docker Image') {
         }
    
 ```
-+ ### 6.4: Push Docker Image to AWS ECR
++ ### 6.2: Push Docker Image to AWS ECR
 
 ```xml
-stage('Push Docker Image') {
+stage('Push Docker Image to AWS ECR') {
 steps{
- withAWS(credentials: 'AWS', region: 'us-east-1') {
-       
                     sh '''
-                   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 108290765801.dkr.ecr.us-east-1.amazonaws.com
-                   docker push 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+                   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 533267221649.dkr.ecr.us-east-1.amazonaws.com
+                   docker push 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
                     '''
-                }
             } 
 
         }
