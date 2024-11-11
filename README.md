@@ -23,7 +23,7 @@ Name: microservice-one
 
 ### Step 3: Create the Jenkins Freestyle job
 ```xml
-Job Name: pushing-docker-image-to-ecr
+Job Name: pushing-docker-image-to-ecr-freestyle
 ```
 ### Step 4: Configure the git repository
 ```xml
@@ -36,12 +36,13 @@ clean package
 ```
 ### Step 6: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
+
 ```
 ### Step 7: Build and tag the Docker image
 ```xml
