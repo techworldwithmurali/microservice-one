@@ -35,13 +35,15 @@ environment {
    
    stage('Push the docker image to Dockerhub') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USER_NAME')]) {
                 sh '''
-               docker login -u mmreddy424 -p Docker@2580
+               docker login -u $DOCKERHUB_USER_NAME -p $DOCKERHUB_PASSWORD
                docker push mmreddy424/microservice-one:$IMAGE_TAG
                 
                 '''
                 
             }
+                }
         }
         
     }
