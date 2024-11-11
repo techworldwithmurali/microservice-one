@@ -5,7 +5,7 @@ pipeline {
     }
  environment {
         // Define IMAGE_TAG globally using the GIT_COMMIT environment variable
-        IMAGE_TAG = $(echo $GIT_COMMIT | cut -c1-6)
+        IMAGE_TAG = "$(echo $GIT_COMMIT | cut -c1-6)"
     }
     stages {
     stage('Clone the repo') {
