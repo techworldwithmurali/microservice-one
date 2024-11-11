@@ -47,7 +47,7 @@ CMD ["catalina.sh", "run"]
 ### Step 7: Build and tag the Docker image
 ```xml
 docker build . --tag microservice-one:latest
-docker tag microservice-one:latest 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+docker tag microservice-one:latest 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ### Step 11: Configure the AWS credenatils in Jenkins Server
 ```xml
@@ -55,11 +55,11 @@ aws configure
 ```
 ### Step 8: login to AWS ECR
 ```xml
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 108290765801.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 533267221649.dkr.ecr.us-east-1.amazonaws.com
 ```
 ### Step 9: Push to AWS ECR
 ```xml
-docker push 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+docker push 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ### Step 10: Verify whether docker image is pushed or not in AWS ECR
 
