@@ -21,8 +21,7 @@ pipeline {
             steps {
                 sh '''
                docker build . --tag microservice-one:$GIT_COMMIT
-               docker tag microservice-one:latest mmreddy424/microservice-one:latest
-                
+               docker tag microservice-one:$GIT_COMMIT mmreddy424/microservice-one:$GIT_COMMIT
                 '''
                 
             }
@@ -31,7 +30,7 @@ pipeline {
             steps {
                 sh '''
                docker login -u mmreddy424 -p Docker@2580
-               docker push  mmreddy424/microservice-one:latest
+               docker push  mmreddy424/microservice-one:$GIT_COMMIT
                 
                 '''
                 
