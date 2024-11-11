@@ -27,6 +27,19 @@ pipeline {
                 
             }
         }
-   
+        stage('Push to Dockerhub') {
+            steps {
+                sh '''
+               docker login -u mmreddy424 -p Docker@2580
+               docker push  mmreddy424/microservice-one:latest
+                
+                '''
+                
+            }
+        }
+
+
+
+        
     }
 }
