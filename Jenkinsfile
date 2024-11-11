@@ -1,7 +1,6 @@
 pipeline {
-    agent any
-    tools{
-        maven 'Maven-3.9.9'
+    agent {
+label 'Java-17'
     }
  environment {
         // Define IMAGE_TAG globally using the GIT_COMMIT environment variable
