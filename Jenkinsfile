@@ -31,11 +31,13 @@ pipeline {
         }
         stage('Push to Dockerhub') {
             steps {
-                sh '''
-               docker login -u mmreddy424 -p Docker@2580
-               docker push  mmreddy424/microservice-one:$IMAGE_TAG
-                
-                '''
+               withCredentials([usernamePassword(credentialsId: 'docker-cred', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USER_NAME')]) {
+    // some block
+                   sh '''
+                   docker login -u $DOCKER_USER_NAME -p $DOCKER_PASSWORD
+                   docker push mmreddy424/microservice-one:$IMAGE_TAG
+                   '''
+}
                 
             }
         }
