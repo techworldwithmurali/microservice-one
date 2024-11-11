@@ -35,7 +35,7 @@ clean package
 ```
 ### Step 6: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
