@@ -3,6 +3,10 @@ pipeline {
     tools{
         maven 'Maven-3.9.9'
     }
+environment {
+        // Define IMAGE_TAG globally using the GIT_COMMIT environment variable
+        IMAGE_TAG = "${GIT_COMMIT.substring(0, 6)}"
+    }
 
     stages {
     stage('Clone the repo') {
@@ -20,7 +24,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
                docker build . --tag microservice-one:$IMAGE_TAG
                docker tag microservice-one:$IMAGE_TAG mmreddy424/microservice-one:$IMAGE_TAG
                 
@@ -33,7 +36,6 @@ pipeline {
    stage('Push the docker image to Dockerhub') {
             steps {
                 sh '''
-                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
                docker login -u mmreddy424 -p Docker@2580
                docker push mmreddy424/microservice-one:$IMAGE_TAG
                 
