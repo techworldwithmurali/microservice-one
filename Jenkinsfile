@@ -32,6 +32,7 @@ pipeline {
         stage('Push Docker Image to AWS ECR') {
 steps{
                     sh '''
+                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 533267221649.dkr.ecr.us-east-1.amazonaws.com
                    docker push 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
                     '''
