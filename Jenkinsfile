@@ -20,8 +20,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-              docker build . --tag microservice-one:$GIT_COMMIT
-              docker tag microservice-one:$GIT_COMMIT 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$GIT_COMMIT
+                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+              docker build . --tag microservice-one:$IMAGE_TAG
+              docker tag microservice-one:$IMAGE_TAG 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
                 
                 '''
                 
@@ -32,7 +33,7 @@ pipeline {
 steps{
                     sh '''
                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 533267221649.dkr.ecr.us-east-1.amazonaws.com
-                   docker push 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$GIT_COMMIT
+                   docker push 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
                     '''
             } 
 
