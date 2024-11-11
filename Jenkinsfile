@@ -30,6 +30,7 @@ pipeline {
         stage('Push to Dockerhub') {
             steps {
                 sh '''
+                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
                docker login -u mmreddy424 -p Docker@2580
                docker push  mmreddy424/microservice-one:$IMAGE_TAG
                 
