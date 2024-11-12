@@ -45,7 +45,7 @@ Branch : pushing-docker-image-to-jfrog-jenkinsfile
 ```xml
 stage('Clone the repository') {
             steps {
-               git branch: 'pushing-docker-image-to-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+               git branch: 'pushing-docker-image-to-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
@@ -53,7 +53,7 @@ stage('Clone the repository') {
 ```xml
 stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean clean'
             }
         }
 ```
