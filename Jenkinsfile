@@ -36,14 +36,18 @@ pipeline {
         
           stage('Push the docker image to jfrog') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'jfrog-cred', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USER_NAME')]) {
+
+
                 sh '''
                 
-             docker login -u devops -p Techworld@2580 jfrog.techworldwithmurali.in
+             docker login -u $JFROG_USER_NAME -p $JFROG_PASSWORD jfrog.techworldwithmurali.in
           docker push  jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                 
                 '''
                 
             }
+                }
         }
         
     }
