@@ -39,7 +39,7 @@ stage('Clone the repository'){
 ```xml
 stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
 ```
@@ -47,7 +47,7 @@ stage('Build') {
 ```xml
 stage('Static code analysis') {
             steps {
-        withSonarQubeEnv('Sonarqube-8.9.10') {
+        withSonarQubeEnv('sonarqube-token') {
                     sh  "mvn sonar:sonar"
                 }
                 }
