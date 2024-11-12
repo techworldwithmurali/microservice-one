@@ -20,44 +20,36 @@
   
 ### Step 2: Create the user in Jfrog
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
 ### Step 3: Create the docker repository in Jfrog
 ```xml
-Repository Name: microservice-one
+Repository Name: tech
 ```
-### Step 4: Write the Dockerfile
-```xml
-FROM tomcat:9
-RUN apt update
-WORKDIR /usr/local/tomcat
-ADD target/*.war webapps/
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
-```
-### Step 5: Create the Jenkins pipeline job
+
+### Step 4: Create the Jenkins pipeline job
 ```xml
 Job Name: pushing-docker-image-to-jfrog-jenkins-pipeline
 ```
 
-### Step 6: Configure the git repository
+### Step 5: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
 Branch : pushing-docker-image-to-jfrog-jenkinsfile
 ```
 
 
-### Step 7: Write the Jenkinsfile
-  + ### Step 7.1: Clone the repository 
+### Step 6: Write the Jenkinsfile
+  + ### Step 6.1: Clone the repository 
 ```xml
 stage('Clone the repository') {
             steps {
-               git branch: 'pushing-docker-image-to-ecr-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+               git branch: 'pushing-docker-image-to-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
-  + ### Step 7.2: Build the code
+  + ### Step 6.2: Build the code
 ```xml
 stage('Build') {
             steps {
@@ -65,13 +57,22 @@ stage('Build') {
             }
         }
 ```
-  + ### 7.3: Build Docker Image
+### Step 7: Write the Dockerfile
+```xml
+FROM tomcat:9.0.96-jdk17
+RUN apt update
+WORKDIR /usr/local/tomcat
+ADD target/*.war webapps/
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+```
+  + ### 6.1: Build Docker Image
 ```xml
 stage('Build Docker Image') {
             steps {
                 sh '''
               docker build . --tag microservice-one:latest
-              docker tag microservice-one:latest a0alrhqhzjivs.jfrog.io/web-application/microservice-one:latest
+          docker tag microservice-one:latest jfrog.techworldwithmurali.in/tech/microservice-one:latest
                 
                 '''
                 
@@ -79,15 +80,15 @@ stage('Build Docker Image') {
         }
    
 ```
-+ ### 7.4: Push Docker Image to Jfrog artifactory
++ ### 6.2: Push Docker Image to Jfrog artifactory
 ```xml
 stage('Push Docker Image') {
             steps {
-                  withCredentials([usernamePassword(credentialsId: 'jfrog_crdenatils', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) {
+                  withCredentials([usernamePassword(credentialsId: 'jfrog-cred', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USER_NAME')]) {
        
                     sh '''
-                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD a0alrhqhzjivs.jfrog.io
-                        docker push a0alrhqhzjivs.jfrog.io/microservice-one/microservice-one:latest
+                   docker login -u devops -p Techworld@2580 jfrog.techworldwithmurali.in
+                        docker push jfrog.techworldwithmurali.in/tech/microservice-one:latest
                     '''
                 }
             } 
