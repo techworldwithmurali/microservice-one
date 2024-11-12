@@ -17,16 +17,16 @@
   
 ### Step 2: Create the user in Jfrog
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
 ### Step 3: Create the docker repository in Jfrog
 ```xml
-Repository Name: microservices
+Repository Name: tech
 ```
 ### Step 4: Create the Jenkins Freestyle job
 ```xml
-Job Name: pushing-docker-image-to-jfrog
+Job Name: pushing-docker-image-to-jfrog-freestyle
 ```
 
 ### Step 5: Configure the git repository
@@ -41,7 +41,7 @@ clean package
 ```
 ### Step 7: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
@@ -50,17 +50,17 @@ CMD ["catalina.sh", "run"]
 ```
 ### Step 8: Build the Docker image
 ```xml
-docker build . --tag microservice-one:$BUILD_NUMBER
+docker build . --tag microservice-one:latest
 ```
 ### Step 9: Login to Jfrog in local
 ```xml
-docker login -u moole -p Techworld@2580 a0twcdxxwofaz.jfrog.io
+docker login -u devops -p Techworld@2580 jfrog.techworldwithmurali.in
 ```
 ### Step 10: tag and push to Jfrog artifactory
 ```xml
-docker tag microservice-one:$BUILD_NUMBER a0twcdxxwofaz.jfrog.io/web-application/microservice-one:$BUILD_NUMBER
+docker tag microservice-one:latest jfrog.techworldwithmurali.in/tech/microservice-one:latest
 
-docker push a0twcdxxwofaz.jfrog.io/microservices/microservice-one:$BUILD_NUMBER
+docker push jfrog.techworldwithmurali.in/tech/microservice-one:latest
 ```
 ### Step 11: Verify whether docker image is pushed or not in Jfrog Artifactory
 
