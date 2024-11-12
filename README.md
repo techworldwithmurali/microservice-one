@@ -30,7 +30,7 @@ Job Name: static-code-analysis-jenkins-piepline
 ```xml
 stage('Clone the repository'){
         steps{
-          git branch: 'static-code-analysis-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+          git branch: 'static-code-analysis-jenkinsfile', credentialsId: 'github-crdentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
           
         } 
       }
