@@ -20,8 +20,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-              docker build . --tag microservice-one:$GIT_COMMIT
-          docker tag microservice-one:$GIT_COMMIT jfrog.techworldwithmurali.in/tech/microservice-one:$GIT_COMMIT
+                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+              docker build . --tag microservice-one:$IMAGE_TAG
+          docker tag microservice-one:$IMAGE_TAG jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                 
                 '''
                 
@@ -31,8 +32,9 @@ pipeline {
           stage('Push the docker image to jfrog') {
             steps {
                 sh '''
+                 IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
              docker login -u devops -p Techworld@2580 jfrog.techworldwithmurali.in
-          docker push  jfrog.techworldwithmurali.in/tech/microservice-one:$GIT_COMMIT
+          docker push  jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                 
                 '''
                 
