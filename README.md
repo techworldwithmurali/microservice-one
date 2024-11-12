@@ -41,7 +41,7 @@ Branch : pushing-docker-image-to-jfrog-jenkinsfile
 
 
 ### Step 6: Write the Jenkinsfile
-  + ### Step 6.1: Clone the repository 
+   ### Step 6.1: Clone the repository 
 ```xml
 stage('Clone the repository') {
             steps {
@@ -49,7 +49,7 @@ stage('Clone the repository') {
             }
         }
 ```
-  + ### Step 6.2: Build the code
+   ### Step 6.2: Build the code
 ```xml
 stage('Build') {
             steps {
@@ -66,7 +66,7 @@ ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 ```
-  + ### 6.1: Build Docker Image
+   ### 7.1: Build Docker Image
 ```xml
 stage('Build Docker Image') {
             steps {
@@ -80,7 +80,7 @@ stage('Build Docker Image') {
         }
    
 ```
-+ ### 6.2: Push Docker Image to Jfrog artifactory
+ ### 7.2: Push Docker Image to Jfrog artifactory
 ```xml
 stage('Push Docker Image') {
             steps {
