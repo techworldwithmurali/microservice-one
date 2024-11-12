@@ -53,7 +53,7 @@ stage('Clone the repository') {
 ```xml
 stage('Build') {
             steps {
-                sh 'mvn clean clean'
+                sh 'mvn clean package'
             }
         }
 ```
