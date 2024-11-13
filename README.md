@@ -32,7 +32,7 @@ Repository Name: microservice-one
 ```
 ### Step 4: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
@@ -60,20 +60,20 @@ docker push mmreddy424/microservice-one:latest
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: microservice-one
   namespace: dev
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: my-app
+      app: microservice-one
   template:
     metadata:
       labels:
-        app: my-app
+        app: microservice-one
     spec:
       containers:
-      - name: my-app-container
+      - name: microservice-one-container
         image: mmreddy424/microservice-one:latest
 ```
 ##### service.yaml
@@ -82,11 +82,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app-service
+  name: microservice-one-service
   namespace: dev
 spec:
   selector:
-    app: my-app
+    app: microservice-one
   ports:
   - protocol: TCP
     port: 80
@@ -97,7 +97,7 @@ spec:
 ### Step 10: Update the Dockerhub image in deployment.yaml
 ### Step 11: Configure  to the AWS CLI using Access key ID & Secret access key
 ```xml
-aws configure
+aws configure --profile dev
 ```
 ### Step 12: Connect to the AWS EKS Cluster
 ```xml
@@ -129,7 +129,7 @@ kubectl create secret docker-registry dockerhubcred \
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: dev-ingress
+  name: payment
   namespace: dev
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
