@@ -129,7 +129,7 @@ kubectl create secret docker-registry dockerhubcred \
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: payment
+  name: payment-ingress
   namespace: dev
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
@@ -145,8 +145,8 @@ spec:
     - host: microservice-one-dev.techworldwithmurali.in
       http:
         paths:
-          - path: /microservice-one
-            pathType: Exact
+          - path: /microservice-one/
+            pathType: Prefix
             backend:
               service:
                 name: microservice-one
