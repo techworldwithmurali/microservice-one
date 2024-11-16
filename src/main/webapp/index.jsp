@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sample Web Application</title>
+        <title>Deploy to EKS fetching image from DockerHub.</title>
       </head>
 <body>
 <br><br><br><br>
-<h2 style="text-align:center; color: brown">Demo of Sample Web Application</h2>
-<p style="text-align:center; color: blue; font-size: 20px;"> This marks the completion of the Sample Web Application demo by Mr Moole Muralidhara Reddy. All the best for your future!</p>
+<h2 style="text-align:center; color: brown">Manual process - Deploy to EKS fetching image from DockerHub</h2>
+<p style="text-align:center; color: blue; font-size: 20px;"> Congratulations! You have successfully deployed the application on EKS, fetching the image from DockerHub. All the best for your future!</p>
 <div style="display: flex; align-items: center; justify-content: center;">
   <div style="width: 30%;">
     <p style="color: brown; text-align: start; font-size: 20px;"> <!-- Adjust font size as needed -->
