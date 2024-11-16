@@ -45,7 +45,7 @@ CMD ["catalina.sh", "run"]
 ```xml
 docker build . --tag microservice-one:latest
 
-docker tag web-application:latest 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+docker tag microservice-one:latest 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ### Step 6: Login to  AWS ECR in local
 ```xml
@@ -121,7 +121,7 @@ kubectl get pods -A
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: payment-ingress
+  name: dev-ingress
   namespace: dev
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
