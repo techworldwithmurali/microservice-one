@@ -91,8 +91,8 @@ spec:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8080
+    targetPort: 8080
     nodePort: 32000
   type: NodePort
 ```
@@ -118,7 +118,7 @@ kubectl get pods -n dev
 kubectl create secret docker-registry dockerhubcred \
 --docker-server=https://index.docker.io/v1/ \
 --docker-username=mmreddy424 \
---docker-password=Docker@ \
+--docker-password=Docker@2580 \
 --docker-email=techworldwithmurali@gmail.com \
 --namespace dev
 ```
@@ -154,7 +154,7 @@ spec:
               service:
                 name: microservice-one
                 port:
-                  number: 80
+                  number: 8080
 
 ```
 
