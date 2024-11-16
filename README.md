@@ -102,11 +102,11 @@ spec:
 ### Step 10: Update the AWS ECR image in deployment.yaml
 ### Step 11: Configure  to the AWS CLI using Access key ID & Secret access key
 ```xml
-aws configure
+aws configure --profile dev
 ```
 ### Step 12: Connect to the AWS EKS Cluster
 ```xml
-aws eks update-kubeconfig --name dev-cluster --region us-east-1
+aws eks update-kubeconfig --name dev-cluster --region us-east-1 --profile dev
 ````
 ### Step 13: Apply the Kubernetes manifest files
 ```
