@@ -103,7 +103,7 @@ aws configure --profile dev
 ```
 ### Step 12: Connect to the AWS EKS Cluster
 ```xml
-aws eks update-kubeconfig --name dev-cluster --region us-east-1
+aws eks update-kubeconfig --name dev-cluster --region us-east-1 --profile dev
 ````
 ### Step 13: Apply the Kubernetes manifest files
 ```
