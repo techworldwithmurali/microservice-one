@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: microservice-one-service
   namespace: dev
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /microservice-one/
+    alb.ingress.kubernetes.io/success-codes: "200"
 spec:
   selector:
     app: microservice-one
