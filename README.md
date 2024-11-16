@@ -15,6 +15,8 @@
 + IAM User is created
 + kubectl is installed
 + aws cli is installed
++ Deployed the AWS ALB Ingress Controller
++ Deployed ExternalDNS
 
 ### Step 1: Clone the repository
   
@@ -43,17 +45,17 @@ CMD ["catalina.sh", "run"]
 ```xml
 docker build . --tag microservice-one:latest
 
-docker tag web-application:latest 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+docker tag web-application:latest 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ### Step 6: Login to  AWS ECR in local
 ```xml
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 533267221649.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 266735810449.dkr.ecr.us-east-1.amazonaws.com
 ```
 ### Step 7: Push the docker image to AWS ECR
 
 ### Step 8: Verify whether docker image is pushed or not in AWS ECR
 ```xml
-docker push 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+docker push 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ### Step 9 : Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
@@ -76,7 +78,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -91,8 +93,8 @@ spec:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8080
+    targetPort: 8080
     nodePort: 32000
   type: NodePort
 
@@ -124,7 +126,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:533267221649:certificate/00cbdeae-a854-412c-87dd-a79eae85a402
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:266735810449:certificate/8a7cbcb1-774c-463f-ab3e-476437028686
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/security-groups: sg-05a2c24577d05d379
@@ -141,7 +143,7 @@ spec:
               service:
                 name: microservice-one
                 port:
-                  number: 80
+                  number: 8080
 
 ```
 
