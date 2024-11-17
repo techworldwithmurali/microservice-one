@@ -97,20 +97,20 @@ spec:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
-    nodePort: 32000
+    port: 8080
+    targetPort: 8080
+    nodePort: 32626
   type: NodePort
 
 ```
 ### Step 10: Update the Jfrog artifactory docker image in deployment.yaml
 ### Step 11: Configure  to the AWS CLI using Access key ID & Secret access key
 ```xml
-aws configure
+aws configure --profile dev
 ```
 ### Step 12: Connect to the AWS EKS Cluster
 ```xml
-aws eks update-kubeconfig --name dev-cluster --region us-east-1
+aws eks update-kubeconfig --name dev-cluster --region us-east-1 --profile dev
 ````
 ### Step 13: Apply the Kubernetes manifest files
 ```
@@ -125,7 +125,8 @@ kubectl get pods -A
 kubectl create secret docker-registry jfrogcred \
 --docker-server=https://jfrog.techworldwithmurali.in \
 --docker-username=devops \
---docker-password=Techworld@2580
+--docker-password=Techworld@2580 \
+--namespace dev
 ```
 ```xml
   imagePullSecrets:
@@ -137,12 +138,12 @@ kubectl create secret docker-registry jfrogcred \
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: payment-ingress
+  name: dev-ingress
   namespace: dev
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:533267221649:certificate/00cbdeae-a854-412c-87dd-a79eae85a402
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:266735810449:certificate/8a7cbcb1-774c-463f-ab3e-476437028686
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/security-groups: sg-05a2c24577d05d379
@@ -159,7 +160,7 @@ spec:
               service:
                 name: microservice-one
                 port:
-                  number: 80
+                  number: 8080
 
 ```
 
