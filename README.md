@@ -59,10 +59,7 @@ docker login -u mmreddy424 -p Docker@2580
 docker push mmreddy424/microservice-one:latest
 ```
 ### Step 10: Verify whether docker image is pushed or not in DockerHub
-### Step 11: Configure the AWS credenatils in Jenkins Server
-```xml
-aws configure
-```
+### Step 11: Attach the IAM role to the Jenkins server
 ### Step 12: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
@@ -99,9 +96,9 @@ spec:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
-    nodePort: 32000
+    port: 8080
+    targetPort: 8080
+    nodePort: 30160
   type: NodePort
 
 ```
@@ -114,11 +111,10 @@ aws eks update-kubeconfig --name dev-cluster --region us-east-1
 cd kubernetes
 kubectl apply -f .
 
-kubectl set image deployment/microservice-one microservice-one=mmreddy424/microservice-one:latest
 ```
 ### Step 14:Verify whether pods are running or not
 ```xml
-kubectl get pods -A
+kubectl get pods -n dev
 ```
 ### Step 15: Create a secret file for Dockerhub credenatils
 ```xml
@@ -127,6 +123,7 @@ kubectl create secret docker-registry dockerhubcred \
 --docker-username=mmreddy424 \
 --docker-password=Docker@2580 \
 --docker-email=techworldwithmurali@gmail.com
+--namespace dev
 ```
 ```xml
 imagePullSecrets:
@@ -142,7 +139,7 @@ http://Node-IP:port/microservice-one/
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: payment-ingress
+  name: dev-ingress
   namespace: dev
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
@@ -164,7 +161,7 @@ spec:
               service:
                 name: microservice-one
                 port:
-                  number: 80
+                  number: 8080
 
 ```
 
