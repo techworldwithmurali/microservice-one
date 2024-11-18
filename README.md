@@ -13,6 +13,8 @@
 +  kubectl is installed
 +  AWS CLI installed
 +  Github token generate
++ Deployed the AWS ALB Ingress Controller"
++ Deployed ExternalDNS
 
 ### Step 1: Install and configure the jenkins plugins
  + git
