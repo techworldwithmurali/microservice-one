@@ -141,8 +141,8 @@ http://Node-IP:port/microservice-one/
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: dev-ingress
-  namespace: dev
+  name: sample-ingress-dev
+  namespace: sample-ns
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
@@ -154,7 +154,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: microservice-one-dev.techworldwithmurali.in
+    - host: myapp-dev.techworldwithmurali.in
       http:
         paths:
           - path: /microservice-one/
@@ -171,7 +171,7 @@ spec:
 
 ### Step 19: Access java application through DNS record Name.
 ```
-https://microservice-one-dev.techworldwithmurali.in/microservice-one/
+https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
 
 ### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Freestyle job.
