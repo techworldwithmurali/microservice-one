@@ -48,19 +48,19 @@ CMD ["catalina.sh", "run"]
 ### Step 7: Build and tag the Docker image
 ```xml
 docker build . --tag microservice-one:$BUILD_NUMBER
-docker tag microservice-one:$BUILD_NUMBER 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+docker tag microservice-one:$BUILD_NUMBER 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
 ```
-### Step 11: Configure the AWS credenatils in Jenkins Server
+### Step 11: Configure the AWS credentials or attach the IAM role to the Jenkins server.
 ```xml
 aws configure
 ```
 ### Step 8: login to AWS ECR
 ```xml
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 108290765801.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 266735810449.dkr.ecr.us-east-1.amazonaws.com
 ```
 ### Step 9: Push to AWS ECR
 ```xml
-docker push 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+docker push 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
 ```
 ### Step 10: Verify whether docker image is pushed or not in AWS ECR
 ### Step 11: Write the Kubernetes Deployment and Service manifest files.
@@ -116,7 +116,7 @@ aws eks update-kubeconfig --name dev-cluster --region us-east-1
 cd kubernetes
 kubectl apply -f .
 
-kubectl set image deployment/microservice-one microservice-one=108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+kubectl set image deployment/microservice-one microservice-one=266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
 ```
 ### Step 15:Verify whether pods are running or not
 ```xml
@@ -132,8 +132,8 @@ http://Node-IP:port/microservice-one/
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: payment-ingress
-  namespace: dev
+  name: sample-ingress-dev
+  namespace: sample-ns
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
@@ -145,7 +145,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: microservice-one-dev.techworldwithmurali.in
+    - host: myapp-dev.techworldwithmurali.in
       http:
         paths:
           - path: /microservice-one/
@@ -162,7 +162,7 @@ spec:
 
 ### Step 19: Access java application through DNS record Name.
 ```
-https://microservice-one-dev.techworldwithmurali.in/microservice-one
+https://myapp-dev.techworldwithmurali.in/microservice-one
 ```
 
 #### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Freestyle job.
