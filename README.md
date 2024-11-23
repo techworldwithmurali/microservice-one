@@ -25,7 +25,7 @@
 Name: microservice-one
 ```
 
-### Step 3: Create the Jenkins job
+### Step 3: Create the Build Jenkins job under microservice-one folder
 ```xml
 Job Name: build
 ```
