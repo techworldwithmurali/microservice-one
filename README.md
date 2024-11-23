@@ -167,7 +167,7 @@ spec:
 
 ### Step 10: Access java application through DNS record Name.
 ```
-https://myapp-dev.techworldwithmurali.in/microservice-one
+https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
 
 #### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Freestyle job.
