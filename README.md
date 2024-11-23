@@ -78,7 +78,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   replicas: 2
   selector:
@@ -100,7 +100,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   selector:
     app: microservice-one
