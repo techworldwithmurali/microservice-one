@@ -125,7 +125,7 @@ kubectl apply -f .
 ```
 ### Step 6:Verify whether pods are running or not
 ```xml
-kubectl get pods -n dev
+kubectl get pods -n sample-ns
 ```
 ### Step 7: Create a secret file for Dockerhub credenatils
 ```xml
@@ -134,7 +134,7 @@ kubectl create secret docker-registry dockerhubcred \
 --docker-username=mmreddy424 \
 --docker-password=Docker@2580 \
 --docker-email=techworldwithmurali@gmail.com
---namespace dev
+--namespace sample-ns
 ```
 ```xml
 imagePullSecrets:
