@@ -32,7 +32,64 @@ WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
+```
+### Step 6: Create the Jenkins Pipeline job
+```xml
+Job Name: deploy-to-eks-dockerhub-jenkins-pipeline
+```
+### Step 7: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-dockerhub-jenkinsfile
+```
 
+
+### Step 8: Write the Jenkinsfile
+  + ### Step 8.1: Clone the repository 
+```xml
+stage('Clone the repository'){
+        steps{
+          git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+          
+        } 
+      }
+```
+  + ### Step 8.2: Build the code
+```xml
+stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+```
+  + ### 8.3: Build Docker Image
+```xml
+stage('Build Docker Image') {
+            steps {
+                sh '''
+               docker build . --tag microservice-one:$BUILD_NUMBER
+               docker tag microservice-one:$BUILD_NUMBER mmreddy424/microservice-one:$BUILD_NUMBER
+                
+                '''
+                
+            }
+        }
+   
+```
++ ### 8.4 Push Docker Image
+```xml
+stage('Push Docker Image') {
+            steps {
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub_crdenatils', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+       
+                    sh '''
+                    docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+                        docker push mmreddy424/microservice-one:$BUILD_NUMBER
+                    '''
+                }
+            } 
+            
+        }
 ```
 ### Step 4: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
@@ -99,64 +156,7 @@ type: kubernetes.io/dockerconfigjson
 imagePullSecrets:
 - name: dockerhubcred
 ```
-### Step 6: Create the Jenkins Pipeline job
-```xml
-Job Name: deploy-to-eks-dockerhub-jenkins-pipeline
-```
-### Step 7: Configure the git repository
-```xml
-GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : deploy-to-eks-dockerhub-jenkinsfile
-```
 
-
-### Step 8: Write the Jenkinsfile
-  + ### Step 8.1: Clone the repository 
-```xml
-stage('Clone the repository'){
-        steps{
-          git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
-          
-        } 
-      }
-```
-  + ### Step 8.2: Build the code
-```xml
-stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-```
-  + ### 8.3: Build Docker Image
-```xml
-stage('Build Docker Image') {
-            steps {
-                sh '''
-               docker build . --tag microservice-one:$BUILD_NUMBER
-               docker tag microservice-one:$BUILD_NUMBER mmreddy424/microservice-one:$BUILD_NUMBER
-                
-                '''
-                
-            }
-        }
-   
-```
-+ ### 8.4 Push Docker Image
-```xml
-stage('Push Docker Image') {
-            steps {
-                  withCredentials([usernamePassword(credentialsId: 'dockerhub_crdenatils', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-       
-                    sh '''
-                    docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
-                        docker push mmreddy424/microservice-one:$BUILD_NUMBER
-                    '''
-                }
-            } 
-            
-        }
-```
 + ### 8.5 Deploy to AWS EKS
 ```xml
 stage('Deployto AWS EKS') {
