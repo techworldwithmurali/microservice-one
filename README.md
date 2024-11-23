@@ -26,49 +26,48 @@ Name: microservice-one
 ```
 ### Step 3: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 ```
-### Step 6: Create the Jenkins Pipeline job
+### Step 4:  Create the Build Jenkins job under microservice-one folder
 ```xml
-Job Name: deploy-to-eks-dockerhub-jenkins-pipeline
+Job Name: build
 ```
-### Step 7: Configure the git repository
+### Step 5: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
 Branch : deploy-to-eks-dockerhub-jenkinsfile
 ```
-
-
-### Step 8: Write the Jenkinsfile
-  + ### Step 8.1: Clone the repository 
+### Step 6: Write the Jenkinsfile
+  + ### Step 6.1: Clone the repository 
 ```xml
 stage('Clone the repository'){
         steps{
-          git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+          git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
           
         } 
       }
 ```
-  + ### Step 8.2: Build the code
+  + ### Step 6.2: Build the code
 ```xml
 stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
 ```
-  + ### 8.3: Build Docker Image
+  + ### 6.3: Build Docker Image
 ```xml
 stage('Build Docker Image') {
             steps {
                 sh '''
-               docker build . --tag microservice-one:$BUILD_NUMBER
-               docker tag microservice-one:$BUILD_NUMBER mmreddy424/microservice-one:$BUILD_NUMBER
+               IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+               docker build . --tag microservice-one:$IMAGE_TAG
+               docker tag microservice-one:$IMAGE_TAG mmreddy424/microservice-one:$IMAGE_TAG
                 
                 '''
                 
@@ -76,22 +75,34 @@ stage('Build Docker Image') {
         }
    
 ```
-+ ### 8.4 Push Docker Image
++ ### 6.4 Push Docker Image
 ```xml
 stage('Push Docker Image') {
             steps {
-                  withCredentials([usernamePassword(credentialsId: 'dockerhub_crdenatils', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub-crde', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
        
                     sh '''
-                    docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
-                        docker push mmreddy424/microservice-one:$BUILD_NUMBER
+                   IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                    docker push mmreddy424/microservice-one:$IMAGE_TAG
                     '''
                 }
             } 
             
         }
 ```
-### Step 4: Write the Kubernetes Deployment and Service manifest files.
+### Step 7: Verify whether docker image is pushed or not in DockerHub
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Jenkins Job - dev-deploy
+### Step 1: Attach the IAM role to the Jenkins server
+### Step 2: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-dockerhub-jenkinsfile
+```
+### Step 3: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
 
@@ -99,7 +110,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   replicas: 2
   selector:
@@ -112,7 +123,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: mmreddy424/web-application:latest
+        image: mmreddy424/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -121,14 +132,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   selector:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8080
+    targetPort: 8080
     nodePort: 32000
   type: NodePort
 
@@ -138,17 +149,18 @@ spec:
  kubectl create secret docker-registry dockerhubcred \
 --docker-server=https://index.docker.io/v1/ \
 --docker-username=mmreddy424 \
---docker-password=Docker@123 \
+--docker-password=Docker@2580 \
 --docker-email=techworldwithmurali@gmail.com --dry-run=client -o yaml > secret.yaml
 ```
 ###### Output:
 ```xml
 apiVersion: v1
 data:
-  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJtbXJlZGR5NDI0IiwicGFzc3dvcmQiOiJEb2NrZXJAMTIzIiwiZW1haWwiOiJ0ZWNod29ybGR3aXRobXVyYWxpQGdtYWlsLmNvbSIsImF1dGgiOiJiVzF5WldSa2VUUXlORHBFYjJOclpYSkFNVEl6In19fQ==
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJtbXJlZGR5NDI0IiwicGFzc3dvcmQiOiJEb2NrZXJAMjU4MCIsImVtYWlsIjoidGVjaHdvcmxkd2l0aG11cmFsaUBnbWFpbC5jb20iLCJhdXRoIjoiYlcxeVpXUmtlVFF5TkRwRWIyTnJaWEpBTWpVNE1BPT0ifX19
 kind: Secret
 metadata:
   name: dockerhubcred
+  namespace: sample-ns
 type: kubernetes.io/dockerconfigjson
 
 ```
