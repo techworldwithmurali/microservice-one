@@ -9,10 +9,13 @@
 ### Prerequisites:
   + Jenkins is installed
   + Docker is installed
+  + Jfrog is Installed
   + Github token generate
-  + AWs EKS is created
+  + AWS EKS is created
   + kubectl is installed
-  + ZAWS CLI is installed
+  + AWS CLI is installed
+  + Deployed the AWS ALB Ingress Controller"
+  + Deployed ExternalDNS
 
 ### Step 1: Install and configure the jenkins plugins
   + git
@@ -27,9 +30,9 @@ Password: Techworld@2580
 ```xml
 Repository Name: microservices
 ```
-### Step 4: Create the Jenkins job
+### Step 4: Create the Build Jenkins job under microservice-one folder
 ```xml
-Job Name: deploy-to-eks-jfrog-freestyle
+Job Name: build 
 ```
 
 ### Step 5: Configure the git repository
@@ -51,31 +54,38 @@ ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 ```
-### Step 8: Build the Docker image
+### Step 8: Build and tag the Docker image
 ```xml
-docker build . --tag microservice-one:$BUILD_NUMBER
+IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+docker build . --tag microservice-one:$IMAGE_TAG
+docker tag microservice-one:$IMAGE_TAG jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
 ```
 ### Step 9: Login to Jfrog in local
 ```xml
-docker login -u moole -p Techworld@2580 a0twcdxxwofaz.jfrog.io
+docker login -u devops -p Techworld@2580 jfrog.techworldwithmurali.in
 ```
 ### Step 10: tag and push to Jfrog artifactory
 ```xml
-docker tag microservice-one:$BUILD_NUMBER a0twcdxxwofaz.jfrog.io/microservices/microservice-one:$BUILD_NUMBER
-docker push a0twcdxxwofaz.jfrog.io/microservices/microservice-one:$BUILD_NUMBER
+docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
 ```
 ### Step 11: Verify whether docker image is pushed or not in Jfrog Artifactory
 
-### Step 12: Configure the AWS credentials or attach the IAM role to the Jenkins server.
-### Step 13: Write the Kubernetes Deployment and Service manifest files.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Jenkins Job 2: deploy-dev
+### Step 1: Configure the AWS credentials or attach the IAM role to the Jenkins server.
+### Step 2: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-jfrog-freestyle
+```
+### Step 3: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   replicas: 2
   selector:
@@ -88,7 +98,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: a0twcdxxwofaz.jfrog.io/microservices/microservice-one:latest
+        image: jfrog.techworldwithmurali.in/tech/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -96,7 +106,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   selector:
     app: microservice-one
@@ -108,37 +118,35 @@ spec:
   type: NodePort
 
 ```
-### Step 14: Connect to the AWS EKS Cluster
+### Step 4: Connect to the AWS EKS Cluster
 ```xml
 aws eks update-kubeconfig --name dev-cluster --region us-east-1
 ```
-### Step 15: Apply the Kubernetes manifest files
+### Step 5: Apply the Kubernetes manifest files
 ```xml
-cd kubernetes
+cd kubernetes-yaml
 kubectl apply -f .
-
-kubectl set image deployment/microservice-one microservice-one=mmreddy424/microservice-one:latest
 ```
-### Step 16:Verify whether pods are running or not
+### Step 6:Verify whether pods are running or not
 ```xml
-kubectl get pods -A
+kubectl get pods -n sample-ns
 ```
-### Step 17: Create a secret file for Jfrog credenatils
+### Step 7: Create a secret file for Jfrog credenatils
 ```xml
 kubectl create secret docker-registry jfrogcred \
---docker-server=https://a0twcdxxwofaz.jfrog.io \
---docker-username=moole \
+--docker-server=https://jfrog.techworldwithmurali.in \
+--docker-username=devops \
 --docker-password=Techworld@2580 --dry-run=client -o yaml > secret.yaml
 ```
 ```xml
   imagePullSecrets:
   - name: jfrogcred
 ```
-### Step 18: Access java application through NodePort.
+### Step 8: Access java application through NodePort.
 ```xml
-http://Node-IP:port/web-application
+http://Node-IP:port/microservice-one/
 ```
-### Step 17: Deploy Ingress Resource for This Application
+### Step 9: Deploy Ingress Resource for This Application
 ```xml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -148,10 +156,10 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:533267221649:certificate/00cbdeae-a854-412c-87dd-a79eae85a402
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:266735810449:certificate/8a7cbcb1-774c-463f-ab3e-476437028686
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
-    alb.ingress.kubernetes.io/security-groups: sg-05a2c24577d05d379
+    alb.ingress.kubernetes.io/security-groups: sg-026c5ab74985fa179
 
 spec:
   ingressClassName: alb
@@ -165,13 +173,13 @@ spec:
               service:
                 name: microservice-one
                 port:
-                  number: 80
+                  number: 8080
 
 ```
 
-### Step 19: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+### Step 10: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
 
-### Step 20: Access java application through DNS record Name.
+### Step 11: Access java application through DNS record Name.
 ```
 https://myapp-dev.techworldwithmurali.in/microservice-one
 ```
