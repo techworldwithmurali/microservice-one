@@ -27,7 +27,7 @@ Name: microservice-one
 
 ### Step 3: Create the Jenkins job
 ```xml
-Job Name: deploy-to-eks-dockerhub-freestyle
+Job Name: build
 ```
 ### Step 4: Configure the git repository
 ```xml
@@ -61,8 +61,16 @@ docker login -u mmreddy424 -p Docker@2580
 docker push mmreddy424/microservice-one:latest
 ```
 ### Step 10: Verify whether docker image is pushed or not in DockerHub
-### Step 11: Attach the IAM role to the Jenkins server
-### Step 12: Write the Kubernetes Deployment and Service manifest files.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Jenkins Job 2: deploy-dev
+### Step 1: Attach the IAM role to the Jenkins server
+### Step 2: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-dockerhub-freestyle
+```
+
+### Step 3: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
 
@@ -104,21 +112,22 @@ spec:
   type: NodePort
 
 ```
-### Step 12: Connect to the AWS EKS Cluster
+### Step 4: Connect to the AWS EKS Cluster
 ```xml
 aws eks update-kubeconfig --name dev-cluster --region us-east-1
+kubectl get nodes
 ```
-### Step 13: Apply the Kubernetes manifest files
+### Step 5: Apply the Kubernetes manifest files
 ```xml
 cd kubernetes
 kubectl apply -f .
 
 ```
-### Step 14:Verify whether pods are running or not
+### Step 6:Verify whether pods are running or not
 ```xml
 kubectl get pods -n dev
 ```
-### Step 15: Create a secret file for Dockerhub credenatils
+### Step 7: Create a secret file for Dockerhub credenatils
 ```xml
 kubectl create secret docker-registry dockerhubcred \
 --docker-server=https://index.docker.io/v1/ \
@@ -131,12 +140,12 @@ kubectl create secret docker-registry dockerhubcred \
 imagePullSecrets:
 - name: dockerhubcred
 ```
-### Step 16: Access java application through NodePort.
+### Step 8: Access java application through NodePort.
 ```xml
 http://Node-IP:port/microservice-one/
 ```
 
-### Step 17: Deploy Ingress Resource for This Application
+### Step 9: Deploy Ingress Resource for This Application
 ```xml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -167,9 +176,9 @@ spec:
 
 ```
 
-### Step 18: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+### Step 10: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
 
-### Step 19: Access java application through DNS record Name.
+### Step 11: Access java application through DNS record Name.
 ```
 https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
