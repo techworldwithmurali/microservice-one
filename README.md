@@ -73,7 +73,6 @@ Branch : deploy-to-eks-ecr-freestyle
 ### Step 2: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -91,11 +90,10 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -160,7 +158,6 @@ spec:
                 name: microservice-one
                 port:
                   number: 80
-
 ```
 
 ### Step 9: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
