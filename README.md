@@ -13,6 +13,8 @@
 + AWS EKS is created
 + IAM user is created.  User name: dev
 + Github token generate
++ Deployed the AWS ALB Ingress Controller"
++ Deployed ExternalDNS
 
 ### Step 1: Install and configure the jenkins plugins
  + git
@@ -23,9 +25,9 @@
 Name: microservice-one
 ```
 
-### Step 3: Create the Jenkins Free style job
+### Step 3: Create the Build Jenkins job under microservice-one folder
 ```xml
-Job Name: deploy-to-eks-ecr-freestyle
+Job Name: build
 ```
 ### Step 4: Configure the git repository
 ```xml
@@ -47,23 +49,28 @@ CMD ["catalina.sh", "run"]
 ```
 ### Step 7: Build and tag the Docker image
 ```xml
-docker build . --tag microservice-one:$BUILD_NUMBER
-docker tag microservice-one:$BUILD_NUMBER 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+docker build . --tag microservice-one:$IMAGE_TAG
+docker tag microservice-one:$IMAGE_TAG 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
 ```
-### Step 11: Configure the AWS credentials or attach the IAM role to the Jenkins server.
-```xml
-aws configure
-```
-### Step 8: login to AWS ECR
+### Step 8: Configure the AWS credentials or attach the IAM role to the Jenkins server.
+
+### Step 9: login to AWS ECR
 ```xml
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 266735810449.dkr.ecr.us-east-1.amazonaws.com
 ```
-### Step 9: Push to AWS ECR
+### Step 10: Push to AWS ECR
 ```xml
-docker push 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
+docker push 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
 ```
-### Step 10: Verify whether docker image is pushed or not in AWS ECR
-### Step 11: Write the Kubernetes Deployment and Service manifest files.
+### Step 11: Verify whether docker image is pushed or not in AWS ECR
+## Jenkins Job 2: deploy-dev
+### Step 1: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-ecr-freestyle
+```
+### Step 2: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
 
@@ -71,7 +78,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   replicas: 2
   selector:
@@ -93,7 +100,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   selector:
     app: microservice-one
@@ -105,29 +112,27 @@ spec:
   type: NodePort
 
 ```
-### Step 12: Configure the AWS credenatils or Add the IAM role in master or slave node
+### Step 3: Configure the AWS credenatils or Add the IAM role in master or slave node
 
-### Step 13: Connect to the AWS EKS Cluster
+### Step 4: Connect to the AWS EKS Cluster
 ```xml
 aws eks update-kubeconfig --name dev-cluster --region us-east-1
 ```
-### Step 14: Apply the Kubernetes manifest files
+### Step 5: Apply the Kubernetes manifest files
 ```xml
-cd kubernetes
+cd kubernetes-yaml
 kubectl apply -f .
-
-kubectl set image deployment/microservice-one microservice-one=266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
 ```
-### Step 15:Verify whether pods are running or not
+### Step 6:Verify whether pods are running or not
 ```xml
-kubectl get pods -A
+kubectl get pods -n sample-ns
 ```
-### Step 16: Access java application through NodePort.
+### Step 7: Access java application through NodePort.
 ```xml
 http://Node-IP:port/microservice-one/
 ```
 
-### Step 17: Deploy Ingress Resource for This Application
+### Step 8: Deploy Ingress Resource for This Application
 ```xml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -158,9 +163,9 @@ spec:
 
 ```
 
-### Step 18: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+### Step 9: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
 
-### Step 19: Access java application through DNS record Name.
+### Step 10: Access java application through DNS record Name.
 ```
 https://myapp-dev.techworldwithmurali.in/microservice-one
 ```
