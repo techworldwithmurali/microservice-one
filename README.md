@@ -24,17 +24,85 @@
 ```xml
 Name: microservice-one
 ```
-### Step 3: Write the Dockerfile
+### Step 3:  Create the Build Jenkins job under microservice-one folder
 ```xml
-FROM tomcat:9
+Job Name: build
+```
+### Step 4: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-ecr-jenkinsfile
+```
+### Step 5: Write the Jenkinsfile
+  + ### Step 5.1: Clone the repository 
+```xml
+stage('Clone the repository'){
+        steps{
+          git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+          
+        } 
+      }
+```
+  + ### Step 5.2: Build the code
+```xml
+stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+```
+### Step 6: Write the Dockerfile
+```xml
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
-
 ```
-### Step 4: Write the Kubernetes Deployment and Service manifest files.
+  + ### 6.1: Build Docker Image
+```xml
+stage('Build Docker Image') {
+            steps {
+                sh '''
+               IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+               docker build . --tag microservice-one:$IMAGE_TAG
+               docker tag microservice-one:$IMAGE_TAG mmreddy424/microservice-one:$IMAGE_TAG
+                
+                '''
+                
+            }
+        }
+   
+```
++ ### 6.2 Push Docker Image
+```xml
+stage('Push Docker Image') {
+            steps {
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+       
+                    sh '''
+                   IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                    docker push mmreddy424/microservice-one:$IMAGE_TAG
+                    '''
+                }
+            } 
+            
+        }
+```
+### Step 7: Verify whether docker image is pushed or not in DockerHub
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Jenkins Job - dev-deploy
+### Step 1: Attach the IAM role to the Jenkins server
+### Step 2: Configure the git repository
+```xml
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+Branch : deploy-to-eks-ecr-jenkinsfile
+```
+### Step 3: Write the Kubernetes Deployment and Service manifest files.
 ##### deployment.yaml
 ```xml
 
@@ -42,7 +110,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   replicas: 2
   selector:
@@ -55,7 +123,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: 533267221649.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+        image: mmreddy424/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -64,104 +132,133 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   selector:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8080
+    targetPort: 8080
     nodePort: 32000
   type: NodePort
 
 ```
-
-### Step 5: Create the Jenkins Pipeline job
+### Step 4: Write the Jenkinsfile
+  + ### Step 4.1: Clone the repository 
 ```xml
-Job Name: deploy-to-eks-ecr-jenkins-pipeline
-```
-### Step 6: Configure the git repository
-```xml
-GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : deploy-to-eks-ecr-jenkinsfile
-```
-
-### Step 7: Write the Jenkinsfile
-  + ### Step 7.1: Clone the repository 
-```xml
-stage('Clone the repository'){
-        steps{
-          git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'Github_credentails', url: 'https://github.com/techworldwithmurali/microservice-one.git'
-          
-        } 
-      }
-```
-  + ### Step 7.2: Build the code
-```xml
-stage('Build') {
+stage('Clone') {
             steps {
-                sh 'mvn clean install'
+                git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
-  + ### Step 7.3: Build Docker Image
+
++ ### Step 4.2: Set Up AWS EKS Config
 ```xml
-stage('Build Docker Image') {
+stage('Set Up AWS EKS Config') {
             steps {
-                sh '''
-              docker build . --tag microservice-one:$BUILD_NUMBER
-              docker tag microservice-one:$BUILD_NUMBER 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
-                
-                '''
-                
+                script {
+                    sh """
+                    aws eks update-kubeconfig --name ${EKS_CLUSTER} --region ${AWS_REGION}
+                    aws sts get-caller-identity
+                    """
+                }
             }
         }
-   
 ```
-+ ### Step 7.4: Push Docker Image to AWS ECR
-
++ ### Step 4.3: Update Deployment File
 ```xml
-stage('Push Docker Image') {
- withAWS(credentials: 'AWS', region: 'us-east-1') {
-       
-                    sh '''
-                   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 108290765801.dkr.ecr.us-east-1.amazonaws.com
-                   docker push 108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
-                    '''
-                }
-            } 
-            
-        }
-```
-+ ### Step 7.5:Deploy to AWS EKS
-```xml
-stage('Deployto AWS EKS') {
+stage('Update Deployment File') {
             steps {
-                // configure AWS credentials
-               withAWS(credentials: 'AWS', region: 'us-east-1') {
-
-                   // Connect to the EKS cluster
-                    sh '''
-                     aws eks update-kubeconfig --name dev-cluster --region us-east-1'
-
-                    // apply YAML files to EKS cluster
-                      cd kubernetes-yaml
-                      kubectl apply -f .
-                      kubectl set image deployment/microservice-one microservice-one=108290765801.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$BUILD_NUMBER
-                    '''
+                script {
+                    sh """
+                    sed -i 's|__TAG__|${params.IMAGE_TAG}|g' ${DEPLOYMENT_FILE}
+                    cat ${DEPLOYMENT_FILE}
+                    """
                 }
-           
-        }
-            
+            }
         }
 ```
-### Step 8:Verify whether pods are running or not
++ ### Step 4.4: Apply Kubernetes Manifests
 ```xml
-kubectl get pods -A
+stage('Apply Kubernetes Manifests') {
+            steps {
+                script {
+                    sh """
+                    kubectl apply -f ${DEPLOYMENT_FILE}
+                    kubectl apply -f .
+                    """
+                }
+            }
+        }
 ```
-### Step 9: Access java application through NodePort.
+### Step 5: Create a secret yaml file for Dockerhub credenatils using kubectl
 ```xml
-http://Node-IP:port/microservice-one
+ kubectl create secret docker-registry dockerhubcred \
+--docker-server=https://index.docker.io/v1/ \
+--docker-username=mmreddy424 \
+--docker-password=Docker@2580 \
+--docker-email=techworldwithmurali@gmail.com \
+--namespace sample-ns --dry-run=client -o yaml
 ```
-Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Pipeline job.
+###### Output:
+```xml
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJtbXJlZGR5NDI0IiwicGFzc3dvcmQiOiJEb2NrZXJAMjU4MCIsImVtYWlsIjoidGVjaHdvcmxkd2l0aG11cmFsaUBnbWFpbC5jb20iLCJhdXRoIjoiYlcxeVpXUmtlVFF5TkRwRWIyTnJaWEpBTWpVNE1BPT0ifX19
+kind: Secret
+metadata:
+  name: dockerhubcred
+  namespace: sample-ns
+type: kubernetes.io/dockerconfigjson
+
+```
+```xml
+imagePullSecrets:
+- name: dockerhubcred
+```
+### Step 6: Access java application through NodePort.
+```xml
+http://Node-IP:port/microservice-one/
+```
+### Step 7: Deploy Ingress Resource for This Application
+```xml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-ingress-dev
+  namespace: sample-ns
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:266735810449:certificate/8a7cbcb1-774c-463f-ab3e-476437028686
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/security-groups: sg-026c5ab74985fa179
+
+spec:
+  ingressClassName: alb
+  rules:
+    - host: myapp-dev.techworldwithmurali.in
+      http:
+        paths:
+          - path: /microservice-one/
+            pathType: Prefix
+            backend:
+              service:
+                name: microservice-one
+                port:
+                  number: 8080
+
+```
+
+### Step 8: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+
+### Step 9: Access java application through DNS record Name.
+```
+https://myapp-dev.techworldwithmurali.in/microservice-one/
+```
+
+### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Pipeline job.
+
