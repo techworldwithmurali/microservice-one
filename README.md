@@ -28,7 +28,7 @@ Password: Techworld@2580
 ```
 ### Step 3: Create the docker repository in Jfrog
 ```xml
-Repository Name: microservices
+Repository Name: tech
 ```
 ### Step 4: Create the Build Jenkins job under microservice-one folder
 ```xml
@@ -37,7 +37,7 @@ Job Name: build
 
 ### Step 5: Configure the git repository
 ```xml
-GitHub Url: https://github.com/techworldwithmurali/java-application.git
+GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
 Branch : deploy-to-eks-jfrog-freestyle
 ```
 
