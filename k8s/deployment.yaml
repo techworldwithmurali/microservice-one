@@ -16,3 +16,5 @@ spec:
       containers:
       - name: microservice-one
         image: jfrog.techworldwithmurali.in/tech/microservice-one:__TAG__
+      imagePullSecrets:
+      - name: jfrogcred
