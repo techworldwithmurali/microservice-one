@@ -1,6 +1,10 @@
 pipeline {
     agent any
     stages {
-
+stage('Clone') {
+            steps {
+                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+            }
+        }
 }
 }
