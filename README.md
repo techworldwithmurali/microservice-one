@@ -23,7 +23,7 @@
   
 ### Step 2: Create the user in Jfrog
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
 ### Step 3: Create the docker repository in Jfrog
@@ -47,7 +47,7 @@ clean package
 ```
 ### Step 7: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
@@ -112,8 +112,8 @@ spec:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8080
+    targetPort: 8080
     nodePort: 32000
   type: NodePort
 
@@ -124,7 +124,7 @@ aws eks update-kubeconfig --name dev-cluster --region us-east-1
 ```
 ### Step 5: Apply the Kubernetes manifest files
 ```xml
-cd kubernetes-yaml
+cd k8s
 kubectl apply -f .
 ```
 ### Step 6:Verify whether pods are running or not
@@ -181,7 +181,7 @@ spec:
 
 ### Step 11: Access java application through DNS record Name.
 ```
-https://myapp-dev.techworldwithmurali.in/microservice-one
+https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
 #### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Freestyle job.
 
