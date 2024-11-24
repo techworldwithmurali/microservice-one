@@ -260,29 +260,5 @@ spec:
 https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
 
-+ ### 8.5 Deploy to AWS EKS
-```xml
-stage('Deployto AWS EKS') {
-            steps {
-                // configure AWS credentials
-               withAWS(credentials: 'AWS', region: 'us-east-1') { 
-                    sh '''
-                     // configure kubectl to access EKS cluster
-                     aws eks update-kubeconfig --name dev-cluster --region us-east-1
-
-                    // Apply the kubernetes YAML files to EKS cluster
-                     cd kubernetes-yaml
-                    kubectl apply -f . 
-                    kubectl set image deployment/microservice-one microservice-one=mmreddy424/microservice-one:$BUILD_NUMBER
-                }
-           
-        }
-            
-        }
-```
-### Step 9: Access java application through NodePort.
-```xml
-http://Node-IP:port/microservice-one
-```
 ### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Pipeline job.
 
