@@ -71,9 +71,9 @@ CMD ["catalina.sh", "run"]
 stage('Build Docker Image') {
             steps {
                 sh '''
-              IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
 docker build . --tag microservice-one:$IMAGE_TAG
-docker tag microservice-one:$IMAGE_TAG jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
+docker tag microservice-one:$IMAGE_TAG 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
                 
                 '''
                 
@@ -89,8 +89,7 @@ stage('Push Docker Image') {
        
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD jfrog.techworldwithmurali.in
-                   docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
+                   docker push 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
                     '''
                 }
             } 
@@ -106,7 +105,7 @@ stage('Push Docker Image') {
 ### Step 2: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : deploy-to-eks-jfrog-jenkinsfile
+Branch : deploy-to-eks-ecr-jenkinsfile
 ```
 
 ### Step 3: Write the Kubernetes Deployment and Service manifest files.
@@ -129,7 +128,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: jfrog.techworldwithmurali.in/tech/microservice-one:latest
+        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -154,7 +153,7 @@ spec:
 ```xml
 stage('Clone') {
             steps {
-                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+                git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
@@ -198,34 +197,12 @@ stage('Apply Kubernetes Manifests') {
             }
         }
 ```
-### Step 5: Create a secret yaml file for Jfrog  credenatils using kubectl
-```xml
-kubectl create secret docker-registry jfrogcred \
---docker-server=https://jfrog.techworldwithmurali.in \
---docker-username=devops \
---docker-password=Techworld@2580 \
---namespace sample-ns --dry-run=client -o yaml > secret.yaml
-```
-###### Output:
-```xml
-apiVersion: v1
-data:
-  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2pmcm9nLnRlY2h3b3JsZHdpdGhtdXJhbGkuaW4iOnsidXNlcm5hbWUiOiJkZXZvcHMiLCJwYXNzd29yZCI6IlRlY2h3b3JsZEAyNTgwIiwiYXV0aCI6IlpHVjJiM0J6T2xSbFkyaDNiM0pzWkVBeU5UZ3cifX19
-kind: Secret
-metadata:
-  name: jfrogcred
-  namespace: sample-ns
-type: kubernetes.io/dockerconfigjson
-```
-```xml
-imagePullSecrets:
-- name: jfrogcred
-```
-### Step 6: Access java application through NodePort.
+
+### Step 5: Access java application through NodePort.
 ```xml
 http://Node-IP:port/microservice-one/
 ```
-### Step 7: Deploy Ingress Resource for This Application
+### Step 6: Deploy Ingress Resource for This Application
 ```xml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -256,9 +233,9 @@ spec:
 
 ```
 
-### Step 8: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+### Step 7: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
 
-### Step 9: Access java application through DNS record Name.
+### Step 8: Access java application through DNS record Name.
 ```
 https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
