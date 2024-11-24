@@ -45,6 +45,7 @@ stage('Apply Kubernetes Manifests') {
                     sh """
                   cd k8s
                     kubectl apply -f .
+kubectl delete -f .
                     """
                 }
             }
