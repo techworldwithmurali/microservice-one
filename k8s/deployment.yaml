@@ -16,3 +16,5 @@ spec:
       containers:
       - name: microservice-one
         image: mmreddy424/microservice-one:__TAG__
+      imagePullSecrets:
+      - name: dockerhubcred
