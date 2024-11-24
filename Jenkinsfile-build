@@ -35,7 +35,7 @@ stage('Push Docker Image') {
        
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD 
+                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD  jfrog.techworldwithmurali.in
                   docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                     '''
                 }
