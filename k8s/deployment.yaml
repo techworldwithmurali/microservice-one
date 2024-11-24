@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:799868
+        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:__TAG__
