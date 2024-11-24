@@ -8,7 +8,7 @@ DEPLOYMENT_FILE = 'k8s/deployment.yaml'
 
  parameters {
 
-        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker Image Tag to deploy')
+        string(name: 'IMAGE_TAG', defaultValue: 'bc6a21', description: 'Docker Image Tag to deploy')
     }	
 	
     stages {
