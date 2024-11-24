@@ -22,11 +22,25 @@ pipeline {
                 sh '''
 IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
 docker build . --tag microservice-one:$IMAGE_TAG
-docker tag microservice-one:$IMAGE_TAG 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
+docker tag microservice-one:$IMAGE_TAG jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                 
                 '''
                 
             }
+        }
+
+stage('Push Docker Image') {
+            steps {
+                  withCredentials([usernamePassword(credentialsId: 'jfrog-cred', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) {
+       
+                    sh '''
+                   IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD 
+                  docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
+                    '''
+                }
+            } 
+            
         }
    
     }
