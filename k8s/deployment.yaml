@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-one
+  namespace: sample-ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: microservice-one
+  template:
+    metadata:
+      labels:
+        app: microservice-one
+    spec:
+      containers:
+      - name: microservice-one
+        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:799868
