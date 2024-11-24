@@ -2,6 +2,11 @@ pipeline {
    agent  any
 
     stages {
+stage('Clone the repository') {
+            steps {
+                git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+            }
+        }
 
 }
 }
