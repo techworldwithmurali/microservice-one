@@ -73,7 +73,7 @@ stage('Build Docker Image') {
                 sh '''
 IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
 docker build . --tag microservice-one:$IMAGE_TAG
-docker tag microservice-one:$IMAGE_TAG 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
+docker tag microservice-one:$IMAGE_TAG jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                 
                 '''
                 
@@ -89,7 +89,8 @@ stage('Push Docker Image') {
        
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-                   docker push 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:$IMAGE_TAG
+                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD 
+                  docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                     '''
                 }
             } 
@@ -105,7 +106,7 @@ stage('Push Docker Image') {
 ### Step 2: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : deploy-to-eks-ecr-jenkinsfile
+Branch : deploy-to-eks-jfrog-jenkinsfile
 ```
 
 ### Step 3: Write the Kubernetes Deployment and Service manifest files.
@@ -128,7 +129,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/microservice-one:latest
+        image: jfrog.techworldwithmurali.in/tech/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -153,7 +154,7 @@ spec:
 ```xml
 stage('Clone') {
             steps {
-                git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
