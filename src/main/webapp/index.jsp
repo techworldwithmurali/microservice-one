@@ -5,7 +5,7 @@
       </head>
 <body>
 <br><br><br><br>
-<h2 style="text-align:center; color: brown">Manual process - Deploy to EKS fetching image from Jfrog using Jenkins freestyle job</h2>
+<h2 style="text-align:center; color: brown">Jenkins freestyle - Deploy to EKS fetching image from Jfrog</h2>
 <p style="text-align:center; color: blue; font-size: 20px;"> Congratulations! You have successfully deployed the application on EKS, fetching the image from  Jfrog using Jenkins freestyle job. All the best for your future!</p>
 <div style="display: flex; align-items: center; justify-content: center;">
   <div style="width: 30%;">
