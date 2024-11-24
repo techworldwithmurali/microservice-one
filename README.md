@@ -7,43 +7,34 @@
 ## Jenkins Pipeline - Deploy to EKS fetching image from DockerHub.
 
 ### Prerequisites:
-+  Jenkins is installed
-+  Docker is installed
-+  Github token generate
-+  AWS CLI is installed
-+  AWS EKS Cluster is created
-+  AWS IAM User user created
-+  kubectl is installed
+  + Jenkins is installed
+  + Docker is installed
+  + Github token generate
+  + AWS EKS is created
+  + kubectl is installed
+  + AWS CLI is installed
+  + Deployed the AWS ALB Ingress Controller"
+  + Deployed ExternalDNS
 
 ### Step 1: Install and configure the jenkins plugins
  + git
  + maven integration
- + Pipeline: AWS Steps
 
 ### Step 2: Create the Docker repository
 ```xml
 Name: microservice-one
 ```
-### Step 3: Write the Dockerfile
-```xml
-FROM tomcat:9.0.96-jdk17
-RUN apt update
-WORKDIR /usr/local/tomcat
-ADD target/*.war webapps/
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
-```
-### Step 4:  Create the Build Jenkins job under microservice-one folder
+### Step 3:  Create the Build Jenkins job under microservice-one folder
 ```xml
 Job Name: build
 ```
-### Step 5: Configure the git repository
+### Step 4: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
 Branch : deploy-to-eks-dockerhub-jenkinsfile
 ```
-### Step 6: Write the Jenkinsfile
-  + ### Step 6.1: Clone the repository 
+### Step 5: Write the Jenkinsfile
+  + ### Step 5.1: Clone the repository 
 ```xml
 stage('Clone the repository'){
         steps{
@@ -52,7 +43,7 @@ stage('Clone the repository'){
         } 
       }
 ```
-  + ### Step 6.2: Build the code
+  + ### Step 5.2: Build the code
 ```xml
 stage('Build') {
             steps {
@@ -60,7 +51,16 @@ stage('Build') {
             }
         }
 ```
-  + ### 6.3: Build Docker Image
+### Step 6: Write the Dockerfile
+```xml
+FROM tomcat:9.0.96-jdk17
+RUN apt update
+WORKDIR /usr/local/tomcat
+ADD target/*.war webapps/
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+```
+  + ### 6.1: Build Docker Image
 ```xml
 stage('Build Docker Image') {
             steps {
@@ -75,11 +75,11 @@ stage('Build Docker Image') {
         }
    
 ```
-+ ### 6.4 Push Docker Image
++ ### 6.2 Push Docker Image
 ```xml
 stage('Push Docker Image') {
             steps {
-                  withCredentials([usernamePassword(credentialsId: 'dockerhub-crde', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
        
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
