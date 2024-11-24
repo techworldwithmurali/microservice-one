@@ -39,5 +39,16 @@ stage('Update Deployment File') {
             }
         }
 
+stage('Apply Kubernetes Manifests') {
+            steps {
+                script {
+                    sh """
+                  cd k8s
+                    kubectl apply -f .
+                    """
+                }
+            }
+        }
+
 }
 }
