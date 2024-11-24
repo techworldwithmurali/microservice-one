@@ -22,16 +22,16 @@
   
 ### Step 2: Create the user in Jfrog
 ```xml
-UserName: moole
+UserName: devops
 Password: Techworld@2580
 ```
 ### Step 3: Create the docker repository in Jfrog
 ```xml
-Repository Name: microservices
+Repository Name: tech
 ```
 ### Step 4: Write the Dockerfile
 ```xml
-FROM tomcat:9
+FROM tomcat:9.0.96-jdk17
 RUN apt update
 WORKDIR /usr/local/tomcat
 ADD target/*.war webapps/
@@ -45,7 +45,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   replicas: 2
   selector:
@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: devopsmurali.jfrog.io/microservices/microservice-one:latest
+        image: jfrog.techworldwithmurali.in/tech/microservice-one:latest
 ```
 ##### service.yaml
 ```xml
@@ -66,33 +66,34 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-one
-  namespace: dev
+  namespace: sample-ns
 spec:
   selector:
     app: microservice-one
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8080
+    targetPort: 8080
     nodePort: 32000
   type: NodePort
 ```
 ### Step 6: Create a secret yaml file for Jfrog  credenatils using kubectl
 ```xml
- kubectl create secret docker-registry jfrogcred \
---docker-server=https://devopsmurali.jfrog.io \
---docker-username=moole \
+kubectl create secret docker-registry jfrogcred \
+--docker-server=https://jfrog.techworldwithmurali.in \
+--docker-username=devops \
 --docker-password=Techworld@2580 \
---dry-run=client -o yaml > secret.yaml
+--namespace --dry-run=client -o yaml > secret.yaml
 ```
 ###### Output:
 ```xml
 apiVersion: v1
 data:
-  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2Rldm9wc211cmFsaS5qZnJvZy5pbyI6eyJ1c2VybmFtZSI6Im1vb2xlIiwicGFzc3dvcmQiOiJUZWNod29ybGRAMjU4MCIsImF1dGgiOiJiVzl2YkdVNlZHVmphSGR2Y214a1FESTFPREE9In19fQ==
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2pmcm9nLnRlY2h3b3JsZHdpdGhtdXJhbGkuaW4iOnsidXNlcm5hbWUiOiJkZXZvcHMiLCJwYXNzd29yZCI6IlRlY2h3b3JsZEAyNTgwIiwiYXV0aCI6IlpHVjJiM0J6T2xSbFkyaDNiM0pzWkVBeU5UZ3cifX19
 kind: Secret
 metadata:
   name: jfrogcred
+  namespace: sample-ns
 type: kubernetes.io/dockerconfigjson
 ```
 ```xml
