@@ -202,7 +202,7 @@ kubectl create secret docker-registry jfrogcred \
 --docker-server=https://jfrog.techworldwithmurali.in \
 --docker-username=devops \
 --docker-password=Techworld@2580 \
---namespace --dry-run=client -o yaml > secret.yaml
+--namespace sample-ns --dry-run=client -o yaml > secret.yaml
 ```
 ###### Output:
 ```xml
@@ -219,8 +219,45 @@ type: kubernetes.io/dockerconfigjson
 imagePullSecrets:
 - name: jfrogcred
 ```
-### Step 10: Access java application through NodePort.
+### Step 6: Access java application through NodePort.
 ```xml
 http://Node-IP:port/web-application
+```
+### Step 7: Deploy Ingress Resource for This Application
+```xml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-ingress-dev
+  namespace: sample-ns
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:266735810449:certificate/8a7cbcb1-774c-463f-ab3e-476437028686
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/security-groups: sg-026c5ab74985fa179
+
+spec:
+  ingressClassName: alb
+  rules:
+    - host: myapp-dev.techworldwithmurali.in
+      http:
+        paths:
+          - path: /microservice-one/
+            pathType: Prefix
+            backend:
+              service:
+                name: microservice-one
+                port:
+                  number: 8080
+
+```
+
+### Step 8: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+
+### Step 9: Access java application through DNS record Name.
+```
+https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
 #### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Pipeline job.
