@@ -198,12 +198,27 @@ stage('Apply Kubernetes Manifests') {
             }
         }
 ```
+### Step 5:Verify whether pods are running or not
+```xml
+kubectl get pods -n sample-ns
+```
+### Step 6: Create a secret file for Jfrog credenatils
+```xml
+kubectl create secret docker-registry jfrogcred \
+--docker-server=https://jfrog.techworldwithmurali.in \
+--docker-username=devops \
+--docker-password=Techworld@2580 --dry-run=client -o yaml > secret.yaml
+```
+```xml
+  imagePullSecrets:
+  - name: jfrogcred
+```
 
-### Step 5: Access java application through NodePort.
+### Step 7: Access java application through NodePort.
 ```xml
 http://Node-IP:port/microservice-one/
 ```
-### Step 6: Deploy Ingress Resource for This Application
+### Step 8: Deploy Ingress Resource for This Application
 ```xml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -234,9 +249,9 @@ spec:
 
 ```
 
-### Step 7: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+### Step 9: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
 
-### Step 8: Access java application through DNS record Name.
+### Step 10: Access java application through DNS record Name.
 ```
 https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
