@@ -7,13 +7,15 @@
 ## Jenkins pipeline - Deploy to EKS fetching image from Jfrog repository.
 
 ### Prerequisites:
-+  Jenkins is installed
-+  Docker is installed
-+  Github token generate
-+  AWS CLI is installed
-+  AWS EKS Cluster is created
-+  AWS IAM User user created
-+  kubectl is installed
+  + Jenkins is installed
+  + Docker is installed
+  + Jfrog is Installed
+  + Github token generate
+  + AWS EKS is created
+  + kubectl is installed
+  + AWS CLI is installed
+  + Deployed the AWS ALB Ingress Controller"
+  + Deployed ExternalDNS
 
 ### Step 1: Install and configure the jenkins plugins
   + git
@@ -87,7 +89,7 @@ stage('Push Docker Image') {
        
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD jfrog.techworldwithmurali.in
+                    docker login -u $JFROG_USERNAME -p $JFROG_PASSWORD jfrog.techworldwithmurali.in
                    docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                     '''
                 }
@@ -104,7 +106,7 @@ stage('Push Docker Image') {
 ### Step 2: Configure the git repository
 ```xml
 GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
-Branch : deploy-to-eks-dockerhub-jenkinsfile
+Branch : deploy-to-eks-jfrog-jenkinsfile
 ```
 
 ### Step 3: Write the Kubernetes Deployment and Service manifest files.
