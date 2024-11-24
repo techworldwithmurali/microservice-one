@@ -149,7 +149,7 @@ spec:
 ```xml
 stage('Clone') {
             steps {
-                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+                git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
 ```
