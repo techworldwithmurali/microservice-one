@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
       - name: microservice-one
-        image: jfrog.techworldwithmurali.in/tech/microservice-one:latest
+        image: jfrog.techworldwithmurali.in/tech/microservice-one:__TAG__
