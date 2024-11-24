@@ -144,13 +144,63 @@ spec:
   type: NodePort
 
 ```
+### Step 4: Write the Jenkinsfile
+  + ### Step 4.1: Clone the repository 
+```xml
+stage('Clone') {
+            steps {
+                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+            }
+        }
+```
+
++ ### Step 4.2: Set Up AWS EKS Config
+```xml
+stage('Set Up AWS EKS Config') {
+            steps {
+                script {
+                    sh """
+                    aws eks update-kubeconfig --name ${EKS_CLUSTER} --region ${AWS_REGION}
+                    aws sts get-caller-identity
+                    """
+                }
+            }
+        }
+```
++ ### Step 4.3: Update Deployment File
+```xml
+stage('Update Deployment File') {
+            steps {
+                script {
+                    sh """
+                    sed -i 's|__TAG__|${params.IMAGE_TAG}|g' ${DEPLOYMENT_FILE}
+                    cat ${DEPLOYMENT_FILE}
+                    """
+                }
+            }
+        }
+```
++ ### Step 4.4: Apply Kubernetes Manifests
+```xml
+stage('Apply Kubernetes Manifests') {
+            steps {
+                script {
+                    sh """
+                    kubectl apply -f ${DEPLOYMENT_FILE}
+                    kubectl apply -f .
+                    """
+                }
+            }
+        }
+```
 ### Step 5: Create a secret yaml file for Dockerhub credenatils using kubectl
 ```xml
  kubectl create secret docker-registry dockerhubcred \
 --docker-server=https://index.docker.io/v1/ \
 --docker-username=mmreddy424 \
 --docker-password=Docker@2580 \
---docker-email=techworldwithmurali@gmail.com --dry-run=client -o yaml > secret.yaml
+--docker-email=techworldwithmurali@gmail.com \
+--namespace sample-ns --dry-run=client -o yaml
 ```
 ###### Output:
 ```xml
@@ -167,6 +217,47 @@ type: kubernetes.io/dockerconfigjson
 ```xml
 imagePullSecrets:
 - name: dockerhubcred
+```
+### Step 6: Access java application through NodePort.
+```xml
+http://Node-IP:port/microservice-one/
+```
+### Step 7: Deploy Ingress Resource for This Application
+```xml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-ingress-dev
+  namespace: sample-ns
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:266735810449:certificate/8a7cbcb1-774c-463f-ab3e-476437028686
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/security-groups: sg-026c5ab74985fa179
+
+spec:
+  ingressClassName: alb
+  rules:
+    - host: myapp-dev.techworldwithmurali.in
+      http:
+        paths:
+          - path: /microservice-one/
+            pathType: Prefix
+            backend:
+              service:
+                name: microservice-one
+                port:
+                  number: 8080
+
+```
+
+### Step 8: Check Whether Load Balancer, Rules, and DNS Records Are Created in Route 53
+
+### Step 9: Access java application through DNS record Name.
+```
+https://myapp-dev.techworldwithmurali.in/microservice-one/
 ```
 
 + ### 8.5 Deploy to AWS EKS
