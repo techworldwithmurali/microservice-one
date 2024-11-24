@@ -7,6 +7,16 @@ stage('Clone the repository') {
                 git branch: 'deploy-to-eks-dockerhub-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
+stage('Set Up AWS EKS Config') {
+            steps {
+                script {
+                    sh """
+                    aws eks update-kubeconfig --name ${EKS_CLUSTER} --region ${AWS_REGION}
+                   kubectl get nodes
+                    """
+                }
+            }
+        }
 
 }
 }
