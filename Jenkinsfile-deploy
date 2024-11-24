@@ -1,10 +1,26 @@
 pipeline {
     agent any
+ environment {
+ AWS_REGION = 'us-east-1'
+        EKS_CLUSTER = 'dev-cluster'
+}
     stages {
 stage('Clone') {
             steps {
                 git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
             }
         }
+
+stage('Set Up AWS EKS Config') {
+            steps {
+                script {
+                    sh """
+                    aws eks update-kubeconfig --name ${EKS_CLUSTER} --region ${AWS_REGION}
+                    aws sts get-caller-identity
+                    """
+                }
+            }
+        }
+
 }
 }
