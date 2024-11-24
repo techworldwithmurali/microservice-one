@@ -118,7 +118,7 @@ aws eks update-kubeconfig --name dev-cluster --region us-east-1
 ```
 ### Step 5: Apply the Kubernetes manifest files
 ```xml
-cd kubernetes-yaml
+cd k8s
 kubectl apply -f .
 ```
 ### Step 6:Verify whether pods are running or not
