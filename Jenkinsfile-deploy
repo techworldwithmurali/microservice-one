@@ -1,5 +1,9 @@
 pipeline {
    agent  any
+environment {
+        AWS_REGION = 'us-east-1'
+        EKS_CLUSTER = 'dev-cluster'
+}
 
     stages {
 stage('Clone the repository') {
