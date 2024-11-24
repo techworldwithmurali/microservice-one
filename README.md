@@ -221,7 +221,7 @@ imagePullSecrets:
 ```
 ### Step 6: Access java application through NodePort.
 ```xml
-http://Node-IP:port/web-application
+http://Node-IP:port/microservice-one/
 ```
 ### Step 7: Deploy Ingress Resource for This Application
 ```xml
