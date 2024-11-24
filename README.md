@@ -69,9 +69,9 @@ CMD ["catalina.sh", "run"]
 stage('Build Docker Image') {
             steps {
                 sh '''
-               IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-               docker build . --tag microservice-one:$IMAGE_TAG
-               docker tag microservice-one:$IMAGE_TAG mmreddy424/microservice-one:$IMAGE_TAG
+              IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
+docker build . --tag microservice-one:$IMAGE_TAG
+docker tag microservice-one:$IMAGE_TAG jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                 
                 '''
                 
@@ -83,12 +83,12 @@ stage('Build Docker Image') {
 ```xml
 stage('Push Docker Image') {
             steps {
-                  withCredentials([usernamePassword(credentialsId: 'dockerhub-crde', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                  withCredentials([usernamePassword(credentialsId: 'jfrog-cred', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) {
        
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push mmreddy424/microservice-one:$IMAGE_TAG
+                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD jfrog.techworldwithmurali.in
+                   docker push jfrog.techworldwithmurali.in/tech/microservice-one:$IMAGE_TAG
                     '''
                 }
             } 
@@ -146,7 +146,57 @@ spec:
     nodePort: 32000
   type: NodePort
 ```
-### Step 4: Create a secret yaml file for Jfrog  credenatils using kubectl
+
+### Step 4: Write the Jenkinsfile
+  + ### Step 4.1: Clone the repository 
+```xml
+stage('Clone') {
+            steps {
+                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+            }
+        }
+```
+
++ ### Step 4.2: Set Up AWS EKS Config
+```xml
+stage('Set Up AWS EKS Config') {
+            steps {
+                script {
+                    sh """
+                    aws eks update-kubeconfig --name ${EKS_CLUSTER} --region ${AWS_REGION}
+                    aws sts get-caller-identity
+                    """
+                }
+            }
+        }
+```
++ ### Step 4.3: Update Deployment File
+```xml
+stage('Update Deployment File') {
+            steps {
+                script {
+                    sh """
+                    sed -i 's|__TAG__|${params.IMAGE_TAG}|g' ${DEPLOYMENT_FILE}
+                    cat ${DEPLOYMENT_FILE}
+                    """
+                }
+            }
+        }
+```
++ ### Step 4.4: Apply Kubernetes Manifests
+```xml
+stage('Apply Kubernetes Manifests') {
+            steps {
+                script {
+                    sh """
+                    kubectl apply -f ${DEPLOYMENT_FILE}
+                    kubectl apply -f .
+                    """
+                }
+            }
+        }
+```
+### Step 5: Create a secret yaml file for Jfrog  credenatils using kubectl
 ```xml
 kubectl create secret docker-registry jfrogcred \
 --docker-server=https://jfrog.techworldwithmurali.in \
@@ -168,57 +218,6 @@ type: kubernetes.io/dockerconfigjson
 ```xml
 imagePullSecrets:
 - name: jfrogcred
-```
-
-
-### Step 9: Write the Jenkinsfile
-  + ### Step 9.1: Clone the repository 
-```xml
-stage('Clone') {
-            steps {
-                git branch: 'deploy-to-eks-jfrog-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
-            }
-        }
-```
-
-+ ### Step 9.5: Set Up AWS EKS Config
-```xml
-stage('Set Up AWS EKS Config') {
-            steps {
-                script {
-                    sh """
-                    aws eks update-kubeconfig --name ${EKS_CLUSTER} --region ${AWS_REGION}
-                    aws sts get-caller-identity
-                    """
-                }
-            }
-        }
-```
-+ ### Step 9.5: Update Deployment File
-```xml
-stage('Update Deployment File') {
-            steps {
-                script {
-                    sh """
-                    sed -i 's|__TAG__|${params.IMAGE_TAG}|g' ${DEPLOYMENT_FILE}
-                    cat ${DEPLOYMENT_FILE}
-                    """
-                }
-            }
-        }
-```
-+ ### Apply Kubernetes Manifests
-```xml
-stage('Apply Kubernetes Manifests') {
-            steps {
-                script {
-                    sh """
-                    kubectl apply -f ${DEPLOYMENT_FILE}
-                    kubectl apply -f .
-                    """
-                }
-            }
-        }
 ```
 ### Step 10: Access java application through NodePort.
 ```xml
