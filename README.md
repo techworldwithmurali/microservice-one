@@ -86,7 +86,7 @@ helm upgrade microservice-one . -n user-management
 
 ---
 
-### Step 8: Create the Ingress Helm Chart  
+**Step 8:** Create the Ingress Helm Chart  
 
 1. **Clone the Ingress Helm Chart**:  
    Clone an existing Ingress Helm chart template or initialize a new one:  
