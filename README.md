@@ -143,7 +143,7 @@ spec:
 
 3. **Update `values.yaml`**:  
    Add the ingress-related configurations to `values.yaml`:  
-   ```yaml
+```yaml
 ingress:
   enabled: true
   className: "alb"  # Use your ingress class name (e.g., "alb")
