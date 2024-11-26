@@ -125,7 +125,7 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ .hostname}}
+    - host: {{ .hostname }}
       http:
         paths:
           - path: /
@@ -136,7 +136,8 @@ spec:
                 port:
                   number: {{ .port }}
     {{- end }}
-    {{- end }}
+{{- end }}
+
 
 ```
 
