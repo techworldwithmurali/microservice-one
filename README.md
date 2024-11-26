@@ -98,7 +98,7 @@ helm upgrade microservice-one . -n user-management
 
 2. **Define the Ingress Resource**:  
    Create or edit the `templates/ingress.yaml` file. Add the desired ingress configuration:  
-   ```yaml
+```yaml
 {{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -136,8 +136,9 @@ spec:
                 port:
                   number: {{ .port }}
     {{- end }}
-{{- end }}
-   ```
+    {{- end }}
+
+```
 
 3. **Update `values.yaml`**:  
    Add the ingress-related configurations to `values.yaml`:  
