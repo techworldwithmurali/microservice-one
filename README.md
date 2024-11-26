@@ -31,12 +31,17 @@ service:
 ```
 
 ---
+**Step 3**: Connect to teh EKS Cluster
+```bash
+aws eks update-kubeconfig --name dev-clsuter --region us-east-1
+```
+---
+
 
 **Step 3**: Install the Helm chart.  
 ```bash
-helm install microservice-one . --namespace user-management --create-namespace
+helm install $RELEASE_NAME . --namespace $namespace --create-namespace --set image.tag=$ImageTag  --force --wait --timeout 600s
 ```
-
 ---
 
 **Step 4**: Verify the deployment.  
@@ -47,7 +52,7 @@ helm list -n user-management
 
 ---
 
-**Step 5**: Creat ethe secret and add in values.yaml
+**Step 5**: Create the secret and add in values.yaml
 1. create teh secret using below comamnd
 
 ```yaml
@@ -55,8 +60,7 @@ helm list -n user-management
 --docker-server=https://index.docker.io/v1/ \
 --docker-username=mmreddy424 \
 --docker-password=Docker@2580 \
---docker-email=techworldwithmurali@gmail.com \
---namespace sample-ns --dry-run=client -o yaml
+--namespace user-management
 ```
 2. Update `values.yaml` to use the secret.
 ```yaml
@@ -67,7 +71,7 @@ imagePullSecrets:
 
 **Step 6**: Upgrade the Helm chart.  
 ```bash
-helm upgrade microservice-one . -n user-management
+helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace --set image.tag=$ImageTag  --force --wait --timeout 600s
 ```
 
 ---
