@@ -87,41 +87,95 @@ helm upgrade microservice-one . -n user-management
 
 ---
 
-**Step 8**: Add an ingress resource.  
-1. Write an `Ingress.yaml` file:  
-   ```yaml
-   apiVersion: networking.k8s.io/v1
-   kind: Ingress
-   metadata:
-     name: app-ingress
-     namespace: user-management
-   spec:
-     rules:
-       - host: <your-dns-name>
-         http:
-           paths:
-             - path: /
-               pathType: Prefix
-               backend:
-                 service:
-                   name: <service-name>
-                   port:
-                     number: 80
-2. Apply the ingress resource:  
+### Step 8: Create the Ingress Helm Chart  
+
+1. **Clone the Ingress Helm Chart**:  
+   Clone an existing Ingress Helm chart template or initialize a new one:  
    ```bash
-   kubectl apply -f templates/Ingress.yaml -n user-management
+   git clone <repository-url> -b 
+   cd ingress
    ```
+
+2. **Define the Ingress Resource**:  
+   Create or edit the `templates/ingress.yaml` file. Add the desired ingress configuration:  
+   ```yaml
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-internal
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    {{- if .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .hostname}}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .service }}
+                port:
+                  number: {{ .port }}
+    {{- end }}
+{{- end }}
+   ```
+
+3. **Update `values.yaml`**:  
+   Add the ingress-related configurations to `values.yaml`:  
+   ```yaml
+ingress:
+  enabled: true
+  className: "alb"  # Use your ingress class name (e.g., "alb")
+  annotations:
+    kubernetes.io/ingress.class: alb
+  hosts:
+    - hostname: user-managment-dev.techworldwithmurali.in
+      service: user-managment
+      port: 80
+   ```
+
+4. **Install the Ingress Helm Chart**:  
+   Deploy the Helm chart with the specified release name and namespace:  
+   ```bash
+   helm install dev-user-management . --namespace user-management
+   ```
+
+5. **Verify the Ingress Resource**:  
+   Check if the ingress resource was created successfully:  
+   ```bash
+   kubectl get ingress -n user-management
+   ```
+   
 
 **Step 9**: Access the application via DNS.  
 Ensure the DNS record is pointing to your ingress controller's external IP. Then access your application at:  
 ```
-http://<your-dns-name>
+https://user-managment-dev.techworldwithmurali.in
 ```
 
 **Step 10**: Uninstall the Helm chart.  
-Remove the deployment when it’s no longer needed:  
 ```bash
 helm uninstall microservice-one -n user-management
+helm uninstall dev-user-management  -n user-management
 ```
 
 **Congratulations!**  
