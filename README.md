@@ -1,26 +1,45 @@
-+ <b>Author: Moole Muralidhara Reddy</b></br>
-+ <b>Email:</b> techworldwithmurali@gmail.com</br>
-+ <b>Website:</b> https://techworldwithmurali.com </br>
-+ <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Manual Process - Deploy an Application on Kubernetes Using Helm Chart.</br>
+### Jenkins Freestyle - Deploy to EKS fetching image from DockerHub
 
-### Steps to Deploy an Application on Kubernetes Using Helm Chart
+#### Author Details:
+- **Author:** Moole Muralidhara Reddy  
+- **Email:** techworldwithmurali@gmail.com  
+- **Website:** [techworldwithmurali.com](https://techworldwithmurali.com)  
+- **YouTube Channel:** *Tech World With Murali*  
 
-**Step 1**: Clone the Helm chart repository.  
-```bash
-git clone https://github.com/techworldwithmurali/helmchart.git
-cd <repository-directory>
-```
+#### Description:  
+This guide provides the steps for deploying a Docker image from DockerHub to an application hosted on AWS EKS using Jenkins Freestyle Jobs and Helm charts.
+
 ---
 
-**Step 2**: Write the Helm chart files.  
-- Create and configure the required files:  
+### **Prerequisites**
+1. **Jenkins**: Installed and accessible.
+2. **Helm**: Installed and configured.
+3. **AWS EKS**: A running cluster.
+4. **kubectl**: Installed and configured to interact with the EKS cluster.
+5. **AWS CLI**: Installed and authenticated.
+6. **GitHub Token**: Generated for repository access.
+7. **AWS ALB Ingress Controller**: Deployed to the cluster.
+8. **ExternalDNS**: Configured for managing DNS entries.
+
+---
+
+### **Steps**
+
+#### 1. **Create Jenkins Job**
+- **Job Name:** `deploy`
+- **Folder Name:** `microservice-one`
+
+#### 2. **Git Configuration**
+- **GitHub URL:** `https://github.com/techworldwithmurali/helmchart.git`
+- **Branch:** `dev`
+
+#### 3. **Prepare Helm Charts**
+- Create and configure:
   - `templates/Deployment.yaml`
   - `templates/Service.yaml`
-  - `values.yaml`  
-- Customize the `values.yaml` file with your application's image, replicas, and other configurations.  
+  - `values.yaml`
 
-Example `values.yaml`:  
+Example `values.yaml`:
 ```yaml
 image:
   repository: <dockerhub-image-repo>
@@ -30,156 +49,126 @@ service:
   port: 80
 ```
 
----
-**Step 3**: Connect to teh EKS Cluster
+#### 4. **Connect to the EKS Cluster**
+Use the AWS CLI to update the kubeconfig for your EKS cluster:
 ```bash
-aws eks update-kubeconfig --name dev-clsuter --region us-east-1
+aws eks update-kubeconfig --name dev-cluster --region us-east-1
 ```
----
 
-
-**Step 3**: Install the Helm chart.  
+#### 5. **Deploy Helm Chart**
+Install the application using Helm:
 ```bash
-helm install $RELEASE_NAME . --namespace $namespace --create-namespace --set image.tag=$ImageTag  --force --wait --timeout 600s
+helm install $RELEASE_NAME . --namespace $namespace --create-namespace \
+--set image.tag=$ImageTag --force --wait --timeout 600s
 ```
----
 
-**Step 4**: Verify the deployment.  
-Check the list of Helm releases:  
+#### 6. **Create DockerHub Secret**
+Create a Kubernetes secret for DockerHub credentials:
 ```bash
-helm list -n user-management
+kubectl create secret docker-registry dockerhubcred \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=<your-username> \
+  --docker-password=<your-password> \
+  --namespace user-management
 ```
-
----
-
-**Step 5**: Create the secret and add in values.yaml
-1. create teh secret using below comamnd
-
-```yaml
- kubectl create secret docker-registry dockerhubcred \
---docker-server=https://index.docker.io/v1/ \
---docker-username=mmreddy424 \
---docker-password=Docker@2580 \
---namespace user-management
-```
-2. Update `values.yaml` to use the secret.
+Update `values.yaml` to reference the secret:
 ```yaml
 imagePullSecrets:
-- name: dockerhubcred
+  - name: dockerhubcred
 ```
----
 
-**Step 6**: Upgrade the Helm chart.  
+#### 7. **Upgrade Helm Chart**
+Apply updates by upgrading the Helm chart:
 ```bash
-helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace --set image.tag=$ImageTag  --force --wait --timeout 600s
+helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace \
+--set image.tag=$ImageTag --force --wait --timeout 600s
+```
+
+#### 8. **Access Application via NodePort**
+Find the NodePort service and access the application:
+```bash
+kubectl get svc -n user-management
+```
+Access at:
+```
+http://<node-ip>:<node-port>
 ```
 
 ---
 
-**Step 7**: Access the application via NodePort.  
-1. Check the NodePort service:  
-   ```bash
-   kubectl get svc -n user-management
-   ```
-2. Use the `NodePort` and your Kubernetes node's IP to access the application:  
-   ```
-   http://<node-ip>:<node-port>
-   ```
+### **Ingress Setup**
 
----
+#### 1. **Create Jenkins Job**
+- **Job Name:** `dev-ingress`
+- **Folder Name:** `ingress`
 
-**Step 8:** Create the Ingress Helm Chart  
+#### 2. **Git Configuration**
+- **GitHub URL:** `https://github.com/techworldwithmurali/ingress.git`
+- **Branch:** `dev`
 
-1. **Clone the Ingress Helm Chart**:  
-   Clone an existing Ingress Helm chart template or initialize a new one:  
-   ```bash
-   git clone https://github.com/techworldwithmurali/ingress.git 
-   cd ingress
-   ```
-
-2. **Define the Ingress Resource**:  
-   Create or edit the `templates/ingress-internal.yaml` file. Add the desired ingress configuration:  
+#### 3. **Define Ingress Resource**
+Edit `templates/ingress-internal.yaml` for internal ingress configurations:
 ```yaml
-{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-internal
-  {{- if .Values.namespace }}
-  namespace: {{ .Values.namespace }}
-  {{- end }}
-  labels:
-    app.kubernetes.io/name: {{ .Release.Name }}
-    helm.sh/chart: {{ .Chart.Name }}
-    {{- if .Chart.AppVersion }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    {{- end }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{- with .Values.ingress.annotations }}
+  name: user-management-internal
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    kubernetes.io/ingress.class: alb
 spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
-  {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .hostname }}
+    - host: user-management-dev.techworldwithmurali.in
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ .service }}
+                name: user-management
                 port:
-                  number: {{ .port }}
-    {{- end }}
-{{- end }}
-
-
+                  number: 80
 ```
 
-3. **Update `values.yaml`**:  
-   Add the ingress-related configurations to `values.yaml`:  
+#### 4. **Update `values.yaml`**
+Add ingress configurations:
 ```yaml
-internal:
+ingress:
   enabled: true
-  className: "alb"  # Use your ingress class name (e.g., "alb")
-  annotations:
-    kubernetes.io/ingress.class: alb
+  className: "alb"
   hosts:
-    - hostname: user-managment-dev.techworldwithmurali.in
-      service: user-managment
+    - hostname: user-management-dev.techworldwithmurali.in
+      service: user-management
       port: 80
-   ```
-
-4. **Install the Ingress Helm Chart**:  
-   Deploy the Helm chart with the specified release name and namespace:  
-   ```bash
-   helm install dev-user-management . --namespace user-management
-   ```
-
-5. **Verify the Ingress Resource**:  
-   Check if the ingress resource was created successfully:  
-   ```bash
-   kubectl get ingress -n user-management
-   ```
----   
-
-**Step 9**: Access the application via DNS.  
-Ensure the DNS record is pointing to your ingress controller's external IP. Then access your application at:  
 ```
-https://user-managment-dev.techworldwithmurali.in
+
+#### 5. **Install Ingress Helm Chart**
+Deploy the ingress resource using Helm:
+```bash
+helm upgrade --install dev-user-management . --namespace user-management
 ```
+
+#### 6. **Verify Ingress Resource**
+Check ingress resource status:
+```bash
+kubectl get ingress -n user-management
+```
+
+#### 7. **Access Application via DNS**
+Ensure DNS points to the ingress controller. Access the application at:
+```
+https://user-management-dev.techworldwithmurali.in
+```
+
 ---
-**Step 10**: Uninstall the Helm chart.  
+
+### **Uninstallation**
+To clean up the deployment:
 ```bash
 helm uninstall microservice-one -n user-management
-helm uninstall dev-user-management  -n user-management
+helm uninstall dev-user-management -n user-management
 ```
+
 ---
-**Congratulations!**  
-You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub.
+
+### **Congratulations!**
+You have successfully deployed your application on AWS EKS using Jenkins Freestyle Jobs, DockerHub, and Helm charts.
