@@ -47,31 +47,14 @@ helm list -n user-management
 
 ---
 
-**Step 5**: Creat ethe secret and add in values.yaml
-1. create teh secret using below comamnd
-
-```yaml
-kubectl create secret docker-registry jfrogcred \
---docker-server=https://jfrog.techworldwithmurali.in \
---docker-username=devops \
---docker-password=Techworld@2580
-
-```
-2. Update `values.yaml` to use the secret.
-```yaml
-imagePullSecrets:
-- name: jfrogcred
-```
----
-
-**Step 6**: Upgrade the Helm chart.  
+**Step 5**: Upgrade the Helm chart.  
 ```bash
 helm upgrade microservice-one . -n user-management
 ```
 
 ---
 
-**Step 7**: Access the application via NodePort.  
+**Step 6**: Access the application via NodePort.  
 1. Check the NodePort service:  
    ```bash
    kubectl get svc -n user-management
@@ -83,7 +66,7 @@ helm upgrade microservice-one . -n user-management
 
 ---
 
-**Step 8:** Create the Ingress Helm Chart  
+**Step 7:** Create the Ingress Helm Chart  
 
 1. **Clone the Ingress Helm Chart**:  
    Clone an existing Ingress Helm chart template or initialize a new one:  
@@ -164,13 +147,13 @@ internal:
    ```
 ---   
 
-**Step 9**: Access the application via DNS.  
+**Step 8**: Access the application via DNS.  
 Ensure the DNS record is pointing to your ingress controller's external IP. Then access your application at:  
 ```
 https://user-managment-dev.techworldwithmurali.in
 ```
 ---
-**Step 10**: Uninstall the Helm chart.  
+**Step 9**: Uninstall the Helm chart.  
 ```bash
 helm uninstall microservice-one -n user-management
 helm uninstall dev-user-management  -n user-management
