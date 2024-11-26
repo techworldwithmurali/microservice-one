@@ -60,7 +60,7 @@ kubectl create secret docker-registry jfrogcred \
 2. Update `values.yaml` to use the secret.
 ```yaml
 imagePullSecrets:
-- name: dockerhubcred
+- name: jfrogcred
 ```
 ---
 
