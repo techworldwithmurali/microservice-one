@@ -49,23 +49,22 @@ helm list -n user-management
 
 ---
 
-**Step 5**: Add secrets and update values.  
-1. Write a `templates/Secret.yaml` file with required credentials or sensitive information.  
-Example:  
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: app-secret
-  namespace: user-management
-type: Opaque
-data:
-  username: <base64-encoded-username>
-  password: <base64-encoded-password>
-```
-2. Update `values.yaml` to use the secret.  
-3. Upgrade the Helm chart to apply changes.
+**Step 5**: Creat ethe secret and add in values.yaml
+1. create teh secret using below comamnd
 
+```yaml
+ kubectl create secret docker-registry dockerhubcred \
+--docker-server=https://index.docker.io/v1/ \
+--docker-username=mmreddy424 \
+--docker-password=Docker@2580 \
+--docker-email=techworldwithmurali@gmail.com \
+--namespace sample-ns --dry-run=client -o yaml
+```
+2. Update `values.yaml` to use the secret.
+```yaml
+imagePullSecrets:
+- name: dockerhubcred
+```
 ---
 
 **Step 6**: Upgrade the Helm chart.  
@@ -166,19 +165,19 @@ internal:
    ```bash
    kubectl get ingress -n user-management
    ```
-   
+---   
 
 **Step 9**: Access the application via DNS.  
 Ensure the DNS record is pointing to your ingress controller's external IP. Then access your application at:  
 ```
 https://user-managment-dev.techworldwithmurali.in
 ```
-
+---
 **Step 10**: Uninstall the Helm chart.  
 ```bash
 helm uninstall microservice-one -n user-management
 helm uninstall dev-user-management  -n user-management
 ```
-
+---
 **Congratulations!**  
 You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub.
