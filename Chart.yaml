@@ -1,0 +1,4 @@
+apiVersion: v2
+name: common-chart
+description: A Helm chart for common resources like deployment, service, and ingress.
+version: 0.1.0
