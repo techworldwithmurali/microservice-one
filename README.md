@@ -51,12 +51,11 @@ helm list -n user-management
 1. create teh secret using below comamnd
 
 ```yaml
- kubectl create secret docker-registry dockerhubcred \
---docker-server=https://index.docker.io/v1/ \
---docker-username=mmreddy424 \
---docker-password=Docker@2580 \
---docker-email=techworldwithmurali@gmail.com \
---namespace sample-ns --dry-run=client -o yaml
+kubectl create secret docker-registry jfrogcred \
+--docker-server=https://jfrog.techworldwithmurali.in \
+--docker-username=devops \
+--docker-password=Techworld@2580
+
 ```
 2. Update `values.yaml` to use the secret.
 ```yaml
