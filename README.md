@@ -8,10 +8,9 @@
 
 **Step 1**: Clone the Helm chart repository.  
 ```bash
-git clone <repository-url> -b main
+git clone https://github.com/techworldwithmurali/helmchart.git
 cd <repository-directory>
 ```
-
 ---
 
 **Step 2**: Write the Helm chart files.  
