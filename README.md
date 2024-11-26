@@ -92,12 +92,12 @@ helm upgrade microservice-one . -n user-management
 1. **Clone the Ingress Helm Chart**:  
    Clone an existing Ingress Helm chart template or initialize a new one:  
    ```bash
-   git clone <repository-url> -b 
+   git clone https://github.com/techworldwithmurali/ingress.git 
    cd ingress
    ```
 
 2. **Define the Ingress Resource**:  
-   Create or edit the `templates/ingress.yaml` file. Add the desired ingress configuration:  
+   Create or edit the `templates/ingress-internal.yaml` file. Add the desired ingress configuration:  
 ```yaml
 {{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
