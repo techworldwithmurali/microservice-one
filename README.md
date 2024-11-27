@@ -87,16 +87,16 @@ stage('Deploy the Application') {
 #### 7. **Create DockerHub Secret**
 Create a Kubernetes secret for DockerHub credentials:
 ```bash
-kubectl create secret docker-registry dockerhubcred \
-  --docker-server=https://index.docker.io/v1/ \
-  --docker-username=<your-username> \
-  --docker-password=<your-password> \
-  --namespace user-management
+kubectl create secret docker-registry jfrogcred \
+--docker-server=https://jfrog.techworldwithmurali.in \
+--docker-username=devops \
+--docker-password=Techworld@2580 \
+--namespace user-management
 ```
 Update `values.yaml` to reference the secret:
 ```yaml
 imagePullSecrets:
-  - name: dockerhubcred
+  - name: jfrogcred
 ```
 
 #### 8. **Upgrade Helm Chart**
