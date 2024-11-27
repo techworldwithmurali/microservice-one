@@ -5,6 +5,19 @@
 + <b>Description:</b> Below are the steps outlined for Manual Process - Deploy an Application on Kubernetes Using Helm Chart.</br>
 
 ### Steps to Deploy an Application on Kubernetes Using Helm Chart
+---
+
+### **Prerequisites**
+1. **AWS ECR**
+2. **Helm**: Installed and configured.
+3. **AWS EKS**: A running cluster.
+4. **kubectl**: Installed and configured to interact with the EKS cluster.
+5. **AWS CLI**: Installed and authenticated.
+6. **GitHub Token**: Generated for repository access.
+7. **AWS ALB Ingress Controller**: Deployed to the cluster.
+8. **ExternalDNS**: Configured for managing DNS entries.
+
+---
 
 **Step 1**: Clone the Helm chart repository.  
 ```bash
