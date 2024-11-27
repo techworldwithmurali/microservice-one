@@ -19,7 +19,7 @@
 
 **Step 1**: Clone the Helm chart repository.  
 ```bash
-git clone https://github.com/techworldwithmurali/helmchart.git
+git clone https://github.com/techworldwithmurali/helmchart.git -b dev
 cd <repository-directory>
 ```
 ---
@@ -103,7 +103,7 @@ helm upgrade microservice-one . -n user-management
 1. **Clone the Ingress Helm Chart**:  
    Clone an existing Ingress Helm chart template or initialize a new one:  
    ```bash
-   git clone https://github.com/techworldwithmurali/ingress.git 
+   git clone https://github.com/techworldwithmurali/ingress.git -b dev
    cd ingress
    ```
 
