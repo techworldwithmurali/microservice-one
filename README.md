@@ -17,6 +17,7 @@
 6. **GitHub Token**: Generated for repository access.
 7. **AWS ALB Ingress Controller**: Deployed to the cluster.
 8. **ExternalDNS**: Configured for managing DNS entries.
+9. AWS ECR
 
 ---
 
