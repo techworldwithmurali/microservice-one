@@ -22,7 +22,7 @@
 
 ### **Steps**
 
-#### 1. **Create Jenkins freestyle Job**
+#### 1. **Create Jenkins Pipeline Job**
 - **Job Name:** `dev-deploy`
 - **Folder Name:** `microservice-one`
 
@@ -46,17 +46,42 @@ service:
   port: 80
 ```
 
+#### 4. **Clone teh repo**
+```bash
+stage('Clone') {
+            steps {
+                git branch: 'dev', credentialsId: 'github-cred', url: 'https://github.com/techworldwithmurali/helmchart.git'
+            }
+        }
+```
 #### 4. **Connect to the EKS Cluster**
 Use the AWS CLI to update the kubeconfig for your EKS cluster:
 ```bash
-aws eks update-kubeconfig --name dev-cluster --region us-east-1
+ stage('Connect to the EKS Cluster') {
+            steps {
+                script {
+                    // Ensure AWS CLI is configured with the right credentials before this step
+                    sh '''
+                    aws eks update-kubeconfig --name dev-cluster --region us-east-1
+                    '''
+                }
+            }
+        }
 ```
 
 #### 5. **Deploy Helm Chart**
 Install the application using Helm:
 ```bash
-helm install $RELEASE_NAME . --namespace $namespace --create-namespace \
---set image.tag=$ImageTag --force --wait --timeout 600s
+stage('Deploy the Application') {
+            steps {
+                script {
+                    // Deploy the application with the provided parameters
+                    sh '''
+                    helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace --set image.tag=$ImageTag --force --wait --timeout 600s
+                    '''
+                }
+            }
+        }
 ```
 
 #### 6. **Create DockerHub Secret**
@@ -75,11 +100,7 @@ imagePullSecrets:
 ```
 
 #### 7. **Upgrade Helm Chart**
-Apply updates by upgrading the Helm chart:
-```bash
-helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace \
---set image.tag=$ImageTag --force --wait --timeout 600s
-```
+Run the Jenkins job to upgrade the Helm chart.
 
 #### 8. **Access Application via NodePort**
 Find the NodePort service and access the application:
@@ -95,7 +116,7 @@ http://<node-ip>:<node-port>
 
 ### **Ingress Setup**
 
-#### 1. **Create Jenkins freestyle Job**
+#### 1. **Create Jenkins Pipeline Job**
 - **Job Name:** `dev-ingress`
 - **Folder Name:** `ingress`
 
@@ -158,11 +179,42 @@ internal:
       service: user-management
       port: 80
 ```
+#### 4. **Clone the repository**
+```bash
+stage('Clone') {
+            steps {
+                git branch: 'dev', credentialsId: 'github-cred', url: 'https://github.com/techworldwithmurali/ingress.git'
+            }
+        }
+```
+#### 4. **Connect to the EKS Cluster**
+Use the AWS CLI to update the kubeconfig for your EKS cluster:
+```bash
+ stage('Connect to the EKS Cluster') {
+            steps {
+                script {
+                    // Ensure AWS CLI is configured with the right credentials before this step
+                    sh '''
+                    aws eks update-kubeconfig --name dev-cluster --region us-east-1
+                    '''
+                }
+            }
+        }
+```
 
 #### 5. **Install Ingress Helm Chart**
-Deploy the ingress resource using Helm:
+Install the application using Helm:
 ```bash
-helm upgrade --install dev-user-management . --namespace user-management
+stage('Deploy the Application') {
+            steps {
+                script {
+                    // Deploy the application with the provided parameters
+                    sh '''
+                    helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace --force --wait --timeout 600s
+                    '''
+                }
+            }
+        }
 ```
 
 #### 6. **Verify Ingress Resource**
@@ -189,4 +241,4 @@ helm uninstall dev-user-management -n user-management
 ---
 
 ### **Congratulations!**
-You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub using Jenkins freestyle job..
+You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub using Jenkins Pipeline job..
