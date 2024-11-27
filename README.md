@@ -1,13 +1,10 @@
-### Jenkins Freestyle - Deploy to EKS fetching image from DockerHub
++ <b>Author: Moole Muralidhara Reddy</b></br>
++ <b>Email:</b> techworldwithmurali@gmail.com</br>
++ <b>Website:</b> https://techworldwithmurali.com </br>
++ <b>Youtube Channel:</b> Tech World With Murali</br>
++ <b>Description:</b> Below are the steps outlined for Jenkins Freestyle Job - Deploy an Application on Kubernetes Using Helm Chart.</br>
 
-#### Author Details:
-- **Author:** Moole Muralidhara Reddy  
-- **Email:** techworldwithmurali@gmail.com  
-- **Website:** [techworldwithmurali.com](https://techworldwithmurali.com)  
-- **YouTube Channel:** *Tech World With Murali*  
-
-#### Description:  
-This guide provides the steps for deploying a Docker image from DockerHub to an application hosted on AWS EKS using Jenkins Freestyle Jobs and Helm charts.
+### Steps to Deploy an Application on Kubernetes Using Helm Chart
 
 ---
 
