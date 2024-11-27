@@ -46,7 +46,7 @@ service:
   port: 80
 ```
 
-#### 4. **Clone teh repo**
+#### 4. **Clone the repository**
 ```bash
 stage('Clone') {
             steps {
@@ -54,7 +54,7 @@ stage('Clone') {
             }
         }
 ```
-#### 4. **Connect to the EKS Cluster**
+#### 5. **Connect to the EKS Cluster**
 Use the AWS CLI to update the kubeconfig for your EKS cluster:
 ```bash
  stage('Connect to the EKS Cluster') {
@@ -69,7 +69,7 @@ Use the AWS CLI to update the kubeconfig for your EKS cluster:
         }
 ```
 
-#### 5. **Deploy Helm Chart**
+#### 6. **Deploy Helm Chart**
 Install the application using Helm:
 ```bash
 stage('Deploy the Application') {
@@ -84,7 +84,7 @@ stage('Deploy the Application') {
         }
 ```
 
-#### 6. **Create DockerHub Secret**
+#### 7. **Create DockerHub Secret**
 Create a Kubernetes secret for DockerHub credentials:
 ```bash
 kubectl create secret docker-registry dockerhubcred \
@@ -99,10 +99,10 @@ imagePullSecrets:
   - name: dockerhubcred
 ```
 
-#### 7. **Upgrade Helm Chart**
+#### 8. **Upgrade Helm Chart**
 Run the Jenkins job to upgrade the Helm chart.
 
-#### 8. **Access Application via NodePort**
+#### 9. **Access Application via NodePort**
 Find the NodePort service and access the application:
 ```bash
 kubectl get svc -n user-management
@@ -179,7 +179,7 @@ internal:
       service: user-management
       port: 80
 ```
-#### 4. **Clone the repository**
+#### 5. **Clone the repository**
 ```bash
 stage('Clone') {
             steps {
@@ -187,7 +187,7 @@ stage('Clone') {
             }
         }
 ```
-#### 4. **Connect to the EKS Cluster**
+#### 6. **Connect to the EKS Cluster**
 Use the AWS CLI to update the kubeconfig for your EKS cluster:
 ```bash
  stage('Connect to the EKS Cluster') {
@@ -202,7 +202,7 @@ Use the AWS CLI to update the kubeconfig for your EKS cluster:
         }
 ```
 
-#### 5. **Install Ingress Helm Chart**
+#### 7. **Install Ingress Helm Chart**
 Install the application using Helm:
 ```bash
 stage('Deploy the Application') {
@@ -217,13 +217,13 @@ stage('Deploy the Application') {
         }
 ```
 
-#### 6. **Verify Ingress Resource**
+#### 8. **Verify Ingress Resource**
 Check ingress resource status:
 ```bash
 kubectl get ingress -n user-management
 ```
 
-#### 7. **Access Application via DNS**
+#### 9. **Access Application via DNS**
 Ensure DNS points to the ingress controller. Access the application at:
 ```
 https://user-management-dev.techworldwithmurali.in
