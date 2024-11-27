@@ -166,7 +166,7 @@ internal:
 ```
 #### 5. **Clone the repository**
 ```bash
-stage('Clone') {
+stage('Clone the repository') {
             steps {
                 git branch: 'dev', credentialsId: 'github-cred', url: 'https://github.com/techworldwithmurali/ingress.git'
             }
