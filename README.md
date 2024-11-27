@@ -17,7 +17,6 @@
 6. **GitHub Token**: Generated for repository access.
 7. **AWS ALB Ingress Controller**: Deployed to the cluster.
 8. **ExternalDNS**: Configured for managing DNS entries.
-9. AWS ECR
 
 ---
 
@@ -84,11 +83,11 @@ http://<node-ip>:<node-port>
 #### 1. **Create Jenkins freestyle Job**
 - **Job Name:** `dev-ingress`
 - **Folder Name:** `ingress`
-
+---
 #### 2. **Git Configuration**
 - **GitHub URL:** `https://github.com/techworldwithmurali/ingress.git`
 - **Branch:** `dev`
-
+---
 #### 3. **Define Ingress Resource**
 Edit `templates/ingress-internal.yaml` for internal ingress configurations:
 ```yaml
@@ -132,7 +131,7 @@ spec:
 {{- end }}
 
 ```
-
+---
 #### 4. **Update `values.yaml`**
 Add ingress configurations:
 ```yaml
@@ -144,23 +143,25 @@ internal:
       service: user-management
       port: 80
 ```
+---
 #### 5. **Connect to the EKS Cluster**
 Use the AWS CLI to update the kubeconfig for your EKS cluster:
 ```bash
 aws eks update-kubeconfig --name dev-cluster --region us-east-1
 ```
+---
 #### 6. **Install Ingress Helm Chart**
 Deploy the ingress resource using Helm:
 ```bash
 helm upgrade --install dev-user-management . --namespace user-management
 ```
-
+---
 #### 7. **Verify Ingress Resource**
 Check ingress resource status:
 ```bash
 kubectl get ingress -n user-management
 ```
-
+---
 #### 8. **Access Application via DNS**
 Ensure DNS points to the ingress controller. Access the application at:
 ```
