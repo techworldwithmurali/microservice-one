@@ -2,7 +2,7 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Jenkins Freestyle Job - Deploy an Application on Kubernetes Using Helm Chart.</br>
++ <b>Description:</b> Below are the steps outlined for Jenkins Pipeline Job - Deploy an Application on Kubernetes Using Helm Chart.</br>
 
 ### Steps to Deploy an Application on Kubernetes Using Helm Chart
 
