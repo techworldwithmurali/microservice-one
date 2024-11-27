@@ -25,8 +25,8 @@ This guide provides the steps for deploying a Docker image from DockerHub to an 
 
 ### **Steps**
 
-#### 1. **Create Jenkins Job**
-- **Job Name:** `deploy`
+#### 1. **Create Jenkins freestyle Job**
+- **Job Name:** `dev-deploy`
 - **Folder Name:** `microservice-one`
 
 #### 2. **Git Configuration**
@@ -98,7 +98,7 @@ http://<node-ip>:<node-port>
 
 ### **Ingress Setup**
 
-#### 1. **Create Jenkins Job**
+#### 1. **Create Jenkins freestyle Job**
 - **Job Name:** `dev-ingress`
 - **Folder Name:** `ingress`
 
@@ -109,30 +109,51 @@ http://<node-ip>:<node-port>
 #### 3. **Define Ingress Resource**
 Edit `templates/ingress-internal.yaml` for internal ingress configurations:
 ```yaml
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: user-management-internal
+  name: {{ .Release.Name }}-internal
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    {{- if .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    kubernetes.io/ingress.class: alb
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
   rules:
-    - host: user-management-dev.techworldwithmurali.in
+    {{- range .Values.internal.hosts }}
+    - host: {{ .hostname }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: user-management
+                name: {{ .service }}
                 port:
-                  number: 80
+                  number: {{ .port }}
+    {{- end }}
+{{- end }}
+
 ```
 
 #### 4. **Update `values.yaml`**
 Add ingress configurations:
 ```yaml
-ingress:
+internal:
   enabled: true
   className: "alb"
   hosts:
@@ -171,4 +192,4 @@ helm uninstall dev-user-management -n user-management
 ---
 
 ### **Congratulations!**
-You have successfully deployed your application on AWS EKS using Jenkins Freestyle Jobs, DockerHub, and Helm charts.
+You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub using Jenkins freestyle job..
