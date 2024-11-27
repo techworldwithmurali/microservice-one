@@ -2,7 +2,7 @@
 + <b>Email:</b> techworldwithmurali@gmail.com</br>
 + <b>Website:</b> https://techworldwithmurali.com </br>
 + <b>Youtube Channel:</b> Tech World With Murali</br>
-+ <b>Description:</b> Below are the steps outlined for Jenkins Freestyle Job - Deploy an Application on Kubernetes Using Helm Chart.</br>
++ <b>Description:</b> Below are the steps outlined for Jenkins Piepline Job - Deploy an Application on Kubernetes Using Helm Chart.</br>
 
 ### Steps to Deploy an Application on Kubernetes Using Helm Chart
 
@@ -84,25 +84,10 @@ stage('Deploy the Application') {
         }
 ```
 
-#### 7. **Create DockerHub Secret**
-Create a Kubernetes secret for DockerHub credentials:
-```bash
-kubectl create secret docker-registry jfrogcred \
---docker-server=https://jfrog.techworldwithmurali.in \
---docker-username=devops \
---docker-password=Techworld@2580 \
---namespace user-management
-```
-Update `values.yaml` to reference the secret:
-```yaml
-imagePullSecrets:
-  - name: jfrogcred
-```
-
-#### 8. **Upgrade Helm Chart**
+#### 7. **Upgrade Helm Chart**
 Run the Jenkins job to upgrade the Helm chart.
 
-#### 9. **Access Application via NodePort**
+#### 8. **Access Application via NodePort**
 Find the NodePort service and access the application:
 ```bash
 kubectl get svc -n user-management
