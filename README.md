@@ -8,7 +8,7 @@
 
 **Step 1**: Clone the Helm chart repository.  
 ```bash
-git clone https://github.com/techworldwithmurali/helmchart.git
+git clone https://github.com/techworldwithmurali/helmchart.git -b dev
 cd <repository-directory>
 ```
 ---
@@ -29,17 +29,19 @@ service:
   type: NodePort
   port: 80
 ```
-
 ---
-
-**Step 3**: Install the Helm chart.  
+**Step 3**: Connect to the EKS cluster  
+```bash
+aws eks update-kubeconfig --name dev-cluster --region us-east-1 --profile dev
+```
+---
+**Step 4**: Install the Helm chart.  
 ```bash
 helm install microservice-one . --namespace user-management --create-namespace
 ```
-
 ---
 
-**Step 4**: Verify the deployment.  
+**Step 5**: Verify the deployment.  
 Check the list of Helm releases:  
 ```bash
 helm list -n user-management
@@ -47,14 +49,14 @@ helm list -n user-management
 
 ---
 
-**Step 5**: Upgrade the Helm chart.  
+**Step 6**: Upgrade the Helm chart.  
 ```bash
 helm upgrade microservice-one . -n user-management
 ```
 
 ---
 
-**Step 6**: Access the application via NodePort.  
+**Step 7**: Access the application via NodePort.  
 1. Check the NodePort service:  
    ```bash
    kubectl get svc -n user-management
@@ -66,7 +68,7 @@ helm upgrade microservice-one . -n user-management
 
 ---
 
-**Step 7:** Create the Ingress Helm Chart  
+**Step 8:** Create the Ingress Helm Chart  
 
 1. **Clone the Ingress Helm Chart**:  
    Clone an existing Ingress Helm chart template or initialize a new one:  
@@ -133,31 +135,35 @@ internal:
       service: user-managment
       port: 80
    ```
-
-4. **Install the Ingress Helm Chart**:  
+4. **Connect to the EKS cluster**:  
+```bash
+aws eks update-kubeconfig --name dev-cluster --region us-east-1 --profile dev
+```
+---
+5. **Install the Ingress Helm Chart**:  
    Deploy the Helm chart with the specified release name and namespace:  
    ```bash
    helm install dev-user-management . --namespace user-management
    ```
 
-5. **Verify the Ingress Resource**:  
+6. **Verify the Ingress Resource**:  
    Check if the ingress resource was created successfully:  
    ```bash
    kubectl get ingress -n user-management
    ```
 ---   
 
-**Step 8**: Access the application via DNS.  
+**Step 9**: Access the application via DNS.  
 Ensure the DNS record is pointing to your ingress controller's external IP. Then access your application at:  
 ```
 https://user-managment-dev.techworldwithmurali.in
 ```
 ---
-**Step 9**: Uninstall the Helm chart.  
+**Step 10**: Uninstall the Helm chart.  
 ```bash
 helm uninstall microservice-one -n user-management
 helm uninstall dev-user-management  -n user-management
 ```
 ---
 **Congratulations!**  
-You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub.
+You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from AWS ECR.
