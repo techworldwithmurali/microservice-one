@@ -59,29 +59,14 @@ helm install $RELEASE_NAME . --namespace $namespace --create-namespace \
 --set image.tag=$ImageTag --force --wait --timeout 600s
 ```
 
-#### 6. **Create DockerHub Secret**
-Create a Kubernetes secret for DockerHub credentials:
-```bash
-kubectl create secret docker-registry jfrogcred \
---docker-server=https://jfrog.techworldwithmurali.in \
---docker-username=devops \
---docker-password=Techworld@2580 \
---namespace user-management
-```
-Update `values.yaml` to reference the secret:
-```yaml
-imagePullSecrets:
-  - name: jfrogcred
-```
-
-#### 7. **Upgrade Helm Chart**
+#### 6. **Upgrade Helm Chart**
 Apply updates by upgrading the Helm chart:
 ```bash
 helm upgrade --install $RELEASE_NAME . --namespace $namespace --create-namespace \
 --set image.tag=$ImageTag --force --wait --timeout 600s
 ```
 
-#### 8. **Access Application via NodePort**
+#### 7. **Access Application via NodePort**
 Find the NodePort service and access the application:
 ```bash
 kubectl get svc -n user-management
