@@ -143,20 +143,24 @@ internal:
       service: user-management
       port: 80
 ```
-
-#### 5. **Install Ingress Helm Chart**
+#### 5. **Connect to the EKS Cluster**
+Use the AWS CLI to update the kubeconfig for your EKS cluster:
+```bash
+aws eks update-kubeconfig --name dev-cluster --region us-east-1
+```
+#### 6. **Install Ingress Helm Chart**
 Deploy the ingress resource using Helm:
 ```bash
 helm upgrade --install dev-user-management . --namespace user-management
 ```
 
-#### 6. **Verify Ingress Resource**
+#### 7. **Verify Ingress Resource**
 Check ingress resource status:
 ```bash
 kubectl get ingress -n user-management
 ```
 
-#### 7. **Access Application via DNS**
+#### 8. **Access Application via DNS**
 Ensure DNS points to the ingress controller. Access the application at:
 ```
 https://user-management-dev.techworldwithmurali.in
@@ -174,4 +178,4 @@ helm uninstall dev-user-management -n user-management
 ---
 
 ### **Congratulations!**
-You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from Docker Hub using Jenkins freestyle job..
+You have successfully deployed the application on Kubernetes using a Helm chart, with the Docker image fetched from AWS ECR  using Jenkins freestyle job..
