@@ -22,15 +22,15 @@
 
 ### Step 2: Create the AWS ECR  repository
 ```xml
-Name: microservice-one
+Name: user-registration
 ```
-### Step 3:  Create the Build Jenkins job under microservice-one folder
+### Step 3:  Create the Build Jenkins job under user-registration folder
 ```xml
 Job Name: build
 ```
 ### Step 4: Configure the git repository
 ```xml
-GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+GitHub Url: https://github.com/techworldwithmurali/user-registration.git
 Branch : deploy-to-eks-ecr-jenkinsfile
 ```
 ### Step 5: Write the Jenkinsfile
@@ -38,7 +38,7 @@ Branch : deploy-to-eks-ecr-jenkinsfile
 ```xml
 stage('Clone the repository'){
         steps{
-          git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+          git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/user-registration.git'
           
         } 
       }
@@ -53,12 +53,21 @@ stage('Build') {
 ```
 ### Step 6: Write the Dockerfile
 ```xml
-FROM tomcat:9.0.96-jdk17
-RUN apt update
-WORKDIR /usr/local/tomcat
-ADD target/*.war webapps/
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
+# Use an OpenJDK base image
+FROM openjdk:17-jdk-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the JAR file from the target directory
+COPY target/*.jar /app/user-registration.jar
+
+# Expose the application's port (update if your application uses a specific port)
+EXPOSE 80
+
+# Command to run the application
+CMD ["java", "-jar", "/app/user-registration.jar"]
+
 ```
   + ### 6.1: Build Docker Image
 ```xml
@@ -66,8 +75,8 @@ stage('Build Docker Image') {
             steps {
                 sh '''
                IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
-               docker build . --tag microservice-one:$IMAGE_TAG
-               docker tag microservice-one:$IMAGE_TAG mmreddy424/microservice-one:$IMAGE_TAG
+               docker build . --tag user-registration:$IMAGE_TAG
+               docker tag user-registration:$IMAGE_TAG mmreddy424/user-registration:$IMAGE_TAG
                 
                 '''
                 
@@ -84,7 +93,7 @@ stage('Push Docker Image') {
                     sh '''
                    IMAGE_TAG=$(echo $GIT_COMMIT | cut -c1-6)
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push mmreddy424/microservice-one:$IMAGE_TAG
+                    docker push mmreddy424/user-registration:$IMAGE_TAG
                     '''
                 }
             } 
@@ -99,7 +108,7 @@ stage('Push Docker Image') {
 ### Step 1: Attach the IAM role to the Jenkins server
 ### Step 2: Configure the git repository
 ```xml
-GitHub Url: https://github.com/techworldwithmurali/microservice-one.git
+GitHub Url: https://github.com/techworldwithmurali/user-registration.git
 Branch : deploy-to-eks-ecr-jenkinsfile
 ```
 ### Step 3: Write the Kubernetes Deployment and Service manifest files.
@@ -109,21 +118,21 @@ Branch : deploy-to-eks-ecr-jenkinsfile
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: microservice-one
+  name: user-registration
   namespace: sample-ns
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: microservice-one
+      app: user-registration
   template:
     metadata:
       labels:
-        app: microservice-one
+        app: user-registration
     spec:
       containers:
-      - name: microservice-one
-        image: mmreddy424/microservice-one:latest
+      - name: user-registration
+        image: 266735810449.dkr.ecr.us-east-1.amazonaws.com/user-registration:latest
 ```
 ##### service.yaml
 ```xml
@@ -131,16 +140,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: microservice-one
+  name: user-registration
   namespace: sample-ns
 spec:
   selector:
-    app: microservice-one
+    app: user-registration
   ports:
   - protocol: TCP
-    port: 8080
-    targetPort: 8080
-    nodePort: 32000
+    port: 80
+    targetPort: 80
   type: NodePort
 
 ```
@@ -149,7 +157,7 @@ spec:
 ```xml
 stage('Clone') {
             steps {
-                git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/microservice-one.git'
+                git branch: 'deploy-to-eks-ecr-jenkinsfile', credentialsId: 'github-credentials', url: 'https://github.com/techworldwithmurali/user-registration.git'
             }
         }
 ```
@@ -193,42 +201,17 @@ stage('Apply Kubernetes Manifests') {
             }
         }
 ```
-### Step 5: Create a secret yaml file for Dockerhub credenatils using kubectl
-```xml
- kubectl create secret docker-registry dockerhubcred \
---docker-server=https://index.docker.io/v1/ \
---docker-username=mmreddy424 \
---docker-password=Docker@2580 \
---docker-email=techworldwithmurali@gmail.com \
---namespace sample-ns --dry-run=client -o yaml
-```
-###### Output:
-```xml
-apiVersion: v1
-data:
-  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJtbXJlZGR5NDI0IiwicGFzc3dvcmQiOiJEb2NrZXJAMjU4MCIsImVtYWlsIjoidGVjaHdvcmxkd2l0aG11cmFsaUBnbWFpbC5jb20iLCJhdXRoIjoiYlcxeVpXUmtlVFF5TkRwRWIyTnJaWEpBTWpVNE1BPT0ifX19
-kind: Secret
-metadata:
-  name: dockerhubcred
-  namespace: sample-ns
-type: kubernetes.io/dockerconfigjson
-
-```
-```xml
-imagePullSecrets:
-- name: dockerhubcred
-```
 ### Step 6: Access java application through NodePort.
 ```xml
-http://Node-IP:port/microservice-one/
+http://node-IP:port
 ```
 ### Step 7: Deploy Ingress Resource for This Application
 ```xml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sample-ingress-dev
-  namespace: sample-ns
+  name: user-management
+  namespace: user-management
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/tags: app=techworldwithmurali,Team=DevOps
@@ -240,16 +223,16 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: myapp-dev.techworldwithmurali.in
+    - host: user-registration.techworldwithmurali.in
       http:
         paths:
-          - path: /microservice-one/
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: microservice-one
+                name: user-registration
                 port:
-                  number: 8080
+                  number: 80
 
 ```
 
@@ -257,7 +240,7 @@ spec:
 
 ### Step 9: Access java application through DNS record Name.
 ```
-https://myapp-dev.techworldwithmurali.in/microservice-one/
+https://myapp-dev.techworldwithmurali.in/user-registration/
 ```
 
 ### Congratulations. You have successfully Deployed the java application in Kubernetes(AWS EKS) through Jenkins Pipeline job.
